@@ -1,0 +1,64 @@
+{
+  "elements":[
+    {
+      "type": "Label",
+      "caption": "Plex Server Settings"
+    },
+    { 
+        "type": "ValidationTextBox", 
+        "name": "IPAddress", 
+        "caption": "Plex IP-Adress"        
+    },
+    { 
+        "type": "ValidationTextBox", 
+        "name": "Port", 
+        "caption": "Plex Port"      
+    },
+    { 
+      "type": "ValidationTextBox", 
+      "name": "Token", 
+      "caption": "Plex Token"
+    }
+  ],
+    "actions":
+    [
+      {
+        "type": "Configurator",
+        "name": "Configurator",
+        "caption": "PlexPlayer Configurator",
+        "delete": true,
+        "sort": {
+          "column": "player",
+          "direction": "ascending"
+        },
+        "columns": [
+          {
+            "caption": "Player",
+            "name": "player",
+            "width": "250px"
+          },
+          {
+            "caption": "Player UUID",
+            "name": "playerUUID",
+            "width": "400px"
+          },
+          {
+            "caption": "Player Platform",
+            "name": "playerPlatform",
+            "width": "200px"
+          },                
+          {
+            "caption": "IP Address",
+            "name": "ipAddress",
+            "width": "200px"
+          },
+          {
+            "caption": "Remote IP Address",
+            "name": "remoteIpAddress",
+            "width": "200px"
+          }        
+        ],
+        "values": []
+      }
+    ]
+  }

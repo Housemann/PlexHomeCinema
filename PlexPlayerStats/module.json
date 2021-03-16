@@ -1,0 +1,16 @@
+{
+    "id": "{DF440146-0E00-8B37-3A28-71D56C0A3CFC}",
+    "name": "PlexPlayerStats",
+    "type": 3,
+    "vendor": "",
+    "aliases": [],
+    "parentRequirements": [
+        "{4C67B307-97FB-B9D3-3600-6305B16EBF9B}"
+    ],
+    "childRequirements": [],
+    "implemented": [
+        "{4223881F-59F4-2962-AA2F-F58C8B7E1E68}"
+    ],
+    "prefix": "PLEX",
+    "url": "https://github.com/Housemann/PlexHomeCinema"
+}

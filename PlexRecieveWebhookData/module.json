@@ -1,0 +1,16 @@
+{
+    "id": "{A7A1B882-9FA6-3846-3DC3-13EA1F7B318B}",
+    "name": "PlexRecieveWebhookData",
+    "type": 1,
+    "vendor": "",
+    "aliases": [],
+    "parentRequirements": [],
+    "childRequirements": [
+        "{9CB87C13-D56D-3118-B827-BBF1B254FD33}"
+    ],
+    "implemented": [
+        "{094FB1A6-73A2-9BEB-2E16-1967F4A1A3DB}"
+    ],
+    "prefix": "PLEX",
+    "url": "https://github.com/Housemann/PlexHomeCinema"
+}

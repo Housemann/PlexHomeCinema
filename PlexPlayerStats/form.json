@@ -1,0 +1,46 @@
+{
+    "elements":
+    [
+        {
+            "type": "Label",
+            "caption": "Plex Player Settings"
+        },
+        { 
+            "type": "ValidationTextBox", 
+            "name": "playerUUID", 
+            "caption": "Player UUID" 
+        },
+        {
+            "type": "ValidationTextBox",
+            "name": "player",
+            "caption": "Player"
+        },
+        {
+            "type": "ValidationTextBox",
+            "name": "playerPlatform",
+            "caption": "Player Platform"
+        },
+        {
+            "type": "Label"          
+        },        
+        {
+            "type": "Label",
+            "caption": "Plex Server Settings"
+        },
+        { 
+            "type": "ValidationTextBox", 
+            "name": "ServerIPAddress", 
+            "caption": "Loaded Plex IP-Adress"            
+        },
+        { 
+            "type": "ValidationTextBox", 
+            "name": "ServerPort", 
+            "caption": "Loaded Plex Port"      
+        },
+        { 
+            "type": "ValidationTextBox", 
+            "name": "ServerToken", 
+            "caption": "Loaded Plex Token"
+        }              
+    ]
+}

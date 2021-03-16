@@ -1,0 +1,19 @@
+{
+    "id": "{CD98E05C-AF3F-91A2-B064-49694D01215F}",
+    "name": "PlexSplitter",
+    "type": 2,
+    "vendor": "",
+    "aliases": [],
+    "parentRequirements": [
+        "{094FB1A6-73A2-9BEB-2E16-1967F4A1A3DB}"
+    ],
+    "childRequirements": [
+        "{4223881F-59F4-2962-AA2F-F58C8B7E1E68}"
+    ],
+    "implemented": [
+        "{4C67B307-97FB-B9D3-3600-6305B16EBF9B}",
+        "{9CB87C13-D56D-3118-B827-BBF1B254FD33}"
+    ],
+    "prefix": "PLEX",
+    "url": "https://github.com/Housemann/PlexHomeCinema"
+}

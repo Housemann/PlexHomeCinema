@@ -1,0 +1,12 @@
+{
+    "id": "{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}",
+    "name": "PlexPlayerConfigurator",
+    "type": 4,
+    "vendor": "",
+    "aliases": [],
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "PLEX",
+    "url": "https://github.com/Housemann/PlexHomeCinema"
+}
