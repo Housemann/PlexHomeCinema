@@ -56,6 +56,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->Variable_Register('summary', $this->translate('Summary'), '~HTMLBox', '', 3, false, 8);
 			// Bewertung			
 			$this->Variable_Register('rating', $this->translate('Rating'), '', '', 3, false, 9);
+			$this->Variable_Register('audienceRating', $this->translate('Audience Rating'), '', '', 3, false, 9);
+			// Rating and AudienceRating
+			$this->Variable_Register('ratingImage', $this->translate('Rating Image'), '', '', 3, false, 9);
+			$this->Variable_Register('audienceRatingImage', $this->translate('Audience Rating Image'), '', '', 3, false, 9);			
 			// Altersbeschränkung
 			$this->Variable_Register('contentRating', $this->translate('Content Rating'), '', '', 3, false, 10);
 			// Cover
@@ -86,6 +90,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->Variable_Register('year', $this->translate('Year'), '', '', 3, false, 24);
 			// Role
 			$this->Variable_Register('role', $this->translate('Role'), '~HTMLBox', '', 3, false, 25);
+			
+			
 
 			
 
@@ -281,18 +287,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				} else {
 					$this->SetValue('studio','');
 				}
-
-				#################################################################
-				// Bewertung
-				if($event <> "media.stop") {
-					if(!empty($metadata->rating)) {
-						$this->SetValue('rating',strval($metadata->rating * 10).' %');
-					} else {
-						$this->SetValue('rating', $this->translate('no Information'));
-					}
-				} else {
-					$this->SetValue('rating','');
-				}			
 
 				#################################################################
 				// Cover
@@ -562,9 +556,49 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$this->SetValue('year','');
 				}
 
-				#################################################################								
+				#################################################################
+				// Bewertung
+				if($event <> "media.stop") {
+					if(!empty($metadata->ratingImage)) {
+						$ratingImage = $metadata->ratingImage;
+						$ratingImage_host = substr($ratingImage,0,strpos($ratingImage,":"));						
+						
+						if($ratingImage_host=="rottentomatoes") {
+							$ratingImage_pic  = substr($ratingImage,strripos($ratingImage,".")+1,10);
+							$this->SetValue('rating',strval($metadata->rating * 10).' %');
+							$this->SetValue('ratingImage',$ratingImage_host."_".$ratingImage_pic);
+						} elseif($ratingImage_host=="imdb") {
+							$ratingImage_pic  = substr($ratingImage,strripos($ratingImage,".")+1,10);
+							$this->SetValue('rating','');
+							$this->SetValue('ratingImage','');
+						}					
+					} else {
+						$this->SetValue('rating','');
+						$this->SetValue('ratingImage','');
+					}
+					if(!empty($metadata->audienceRatingImage)) {					
+					$audienceRatingImage = $metadata->audienceRatingImage;
+					$audienceRatingImage_host = substr($audienceRatingImage,0,strpos($audienceRatingImage,":"));
+					
+						if($audienceRatingImage_host=="rottentomatoes") {
+							$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
+							$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
+							$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
+						} elseif($audienceRatingImage_host=="imdb") {
+							$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
+							$this->SetValue('audienceRating',strval($metadata->audienceRating));
+							$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
+						}											
+					} else {
+						$this->SetValue('audienceRating','');
+						$this->SetValue('audienceRatingImage','');
+					}
+				}
+
+				#################################################################
 				// Html Overview
 				$this->GenerateHtmlOverview ();
+
 
 
 
@@ -625,10 +659,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		
 							if($library=='Video') {                        
 								$arrayPlayerData[$plexPlayer] = [
-									"movieFormat"      	=> $data[$library][$i]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
-									"soundFormat"      	=> $data[$library][$i]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
-									"aspectRatio"				=> $data[$library][$i]['Media']['@attributes']['aspectRatio'],
-									"duration"					=> $data[$library][$i]['@attributes']['duration'] / 1000
+									"movieFormat"      	=> @$data[$library][$i]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
+									"soundFormat"      	=> @$data[$library][$i]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
+									"aspectRatio"				=> @$data[$library][$i]['Media']['@attributes']['aspectRatio'],
+									"duration"					=> @$data[$library][$i]['@attributes']['duration'] / 1000
 								];
 		
 								// Serie Episode zusammenbauen und ins Array Pushen
@@ -638,13 +672,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								}    
 							} elseif ($library=='Photo') {
 								$arrayPlayerData[$plexPlayer] = [
-									"container"       => $data[$library][$i]['Media']['Part']['@attributes']['container'],
-									"file"            => $data[$library][$i]['Media']['Part']['@attributes']['file']
+									"container"       => @$data[$library][$i]['Media']['Part']['@attributes']['container'],
+									"file"            => @$data[$library][$i]['Media']['Part']['@attributes']['file']
 								];
 							} elseif ($library=='Track') {
 								$arrayPlayerData[$plexPlayer] = [
-									"soundFormat"    => $data[$library][$i]['Media']['Part']['Stream']['@attributes']['displayTitle'],
-									"duration"			 => $data[$library][$i]['@attributes']['duration'] / 1000
+									"soundFormat"    => @$data[$library][$i]['Media']['Part']['Stream']['@attributes']['displayTitle'],
+									"duration"			 => @$data[$library][$i]['@attributes']['duration'] / 1000
 								];
 							} 
 						}
@@ -654,10 +688,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		
 						if($library=='Video') {          
 							$arrayPlayerData[$plexPlayer] = [
-								"movieFormat"      	=> $data[$library]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
-								"soundFormat"      	=> $data[$library]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
-								"aspectRatio"				=> $data[$library]['Media']['@attributes']['aspectRatio'],
-								"duration"					=> $data[$library]['@attributes']['duration'] / 1000
+								"movieFormat"      	=> @$data[$library]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
+								"soundFormat"      	=> @$data[$library]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
+								"aspectRatio"				=> @$data[$library]['Media']['@attributes']['aspectRatio'],
+								"duration"					=> @$data[$library]['@attributes']['duration'] / 1000
 							];
 		
 							// Serie Episode zusammenbauen und ins Array Pushen
@@ -667,13 +701,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 							}
 						} elseif ($library=='Photo') {
 								$arrayPlayerData[$plexPlayer] = [
-									"container"       => $data[$library]['Media']['Part']['@attributes']['container'],
-									"file"            => $data[$library]['Media']['Part']['@attributes']['file']
+									"container"       => @$data[$library]['Media']['Part']['@attributes']['container'],
+									"file"            => @$data[$library]['Media']['Part']['@attributes']['file']
 								];
 						} elseif ($library=='Track') {
 								$arrayPlayerData[$plexPlayer] = [
-									"soundFormat"    => $data[$library]['Media']['Part']['Stream']['@attributes']['displayTitle'],
-									"duration"			 => $data[$library]['@attributes']['duration'] / 1000
+									"soundFormat"    => @$data[$library]['Media']['Part']['Stream']['@attributes']['displayTitle'],
+									"duration"			 => @$data[$library]['@attributes']['duration'] / 1000
 								];
 						} 
 					}
@@ -827,7 +861,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ServerToken		 = $this->ReadPropertyString('ServerToken');
 
 			$librarySectionType = $this->ReadAttributeString('librarySectionType');
-			$event = $this->GetValue('event');
+			$event = GetValueFormatted($this->GetIDForIdent('event'));
 
 			// Plex URL
 			if(!empty($ServerToken)) {				
@@ -847,7 +881,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$movieFormat = $this->GetValue('movieFormat');
 			$soundFormat = $this->GetValue('soundFormat');
 
-			if($event <> 4) {
+			if($event <> "Stop") {
 				$s = '';
 				$s = $s . "<table style=\"border-collapse: collapse; width: 100%; \" border=\"0\">";
 				$s = $s . "<tbody>";
