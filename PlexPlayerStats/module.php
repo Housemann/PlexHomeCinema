@@ -703,7 +703,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				mkdir(IPS_GetKernelDir()."webfront/user/PlexCover", 0777, true);
 
 				// Copy Files
-				$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/img/';
+				$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/PlexPlayerStats/img/';
 				$DestPath   = IPS_GetKernelDir().'webfront/user/PlexCover/';
 				$files = 'plex_cover.jpg,plex_fanart.jpg';
 
