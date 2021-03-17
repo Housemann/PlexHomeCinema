@@ -23,6 +23,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->RegisterPropertyString('ServerPort', '');
 			$this->RegisterPropertyString('ServerToken', '');
 
+			$this->RegisterAttributeString('librarySectionType','');
 
 			#############################################################################################
 			// Variablen und Profile anlegen
@@ -67,13 +68,30 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->Variable_Register('movieFormat', $this->translate('Movie Format'), '', '', 3, false, 14);
 			// Sound Format
 			$this->Variable_Register('soundFormat', $this->translate('Sound Format'), '', '', 3, false, 15);
+			// Aspect Ratio
+			$this->Variable_Register('aspectRatio', $this->translate('Aspect Ratio'), '', '', 3, false, 16);
+			// Aspect Ratio
+			$this->Variable_Register('aspectRatio', $this->translate('Aspect Ratio'), '', '', 3, false, 17);
+			// Total Duration
+			$this->Variable_Register('duration', $this->translate('Total Duration'), '', '', 3, false, 18);
+			// Director
+			$this->Variable_Register('director', $this->translate('Director'), '', '', 3, false, 20);
+			// Producer
+			$this->Variable_Register('producer', $this->translate('Producer'), '', '', 3, false, 21);
+			// Writer
+			$this->Variable_Register('writer', $this->translate('Writer'), '', '', 3, false, 22);	
+			// SeasonEpisode
+			$this->Variable_Register('seasonEpisode', $this->translate('Season Episode'), '', '', 3, false, 23);
+			// Year
+			$this->Variable_Register('year', $this->translate('Year'), '', '', 3, false, 24);
+			// Role
+			$this->Variable_Register('role', $this->translate('Role'), '~HTMLBox', '', 3, false, 25);
+
 			
-		
 
 
-
-
-
+			// Overview
+			$this->Variable_Register('overview', $this->translate('Overview'), '~HTMLBox', '', 3, false, 50);
 		
 		}
 
@@ -108,8 +126,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			
 			$playerUUID 					= $data->Player->uuid;
 			$event								= $data->event;
-			$librarySectionType		= $data->Metadata->librarySectionType;			
-			$metadata 						= $data->Metadata;			
+			$librarySectionType		= $data->Metadata->librarySectionType;
+			$metadata 						= $data->Metadata;
+
+			// LibryrySectionTxpe merken
+			$this->WriteAttributeString('librarySectionType',$librarySectionType);
 
 			// Player uebereinstimmung
 			if($playerUUID === $this->ReadPropertyString('playerUUID')) {
@@ -338,10 +359,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$coverFanart = '';		
 				
 				if($event <> "media.stop") {
-					$this->SetValue('cover',$coverFanart);
+					$this->SetValue('coverFanart',$coverFanart);
 					$this->CreateMediaObject ($this->GetIDForIdent('coverFanart'), 'Fanart', $coverFanart, $event, $Fanart=1);
 				} else {
-					$this->SetValue('cover','');
+					$this->SetValue('coverFanart','');
 					$this->CreateMediaObject ($this->GetIDForIdent('coverFanart'), 'Fanart', $coverFanart, $event, $Fanart=1);
 				}
 				
@@ -390,6 +411,162 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				}
 
 				#################################################################
+				// Aspect Ratio
+				if($librarySectionType == "show") {
+					$aspectRatio = @$PlayerSteamData->aspectRatio;
+				} elseif ($librarySectionType == "movie") {
+					$aspectRatio = @$PlayerSteamData->aspectRatio;
+				} elseif ($librarySectionType == "artist") {
+					$aspectRatio = '';
+				} elseif ($librarySectionType == "photo") {
+					$aspectRatio = '';
+				}
+
+				// Wenn Metadaten nicht vorhanden
+				if(empty($aspectRatio))
+					$aspectRatio = '';
+				
+				if($event <> "media.stop") {
+					$this->SetValue('aspectRatio',$aspectRatio);
+				} else {
+					$this->SetValue('aspectRatio','');
+				}
+
+				#################################################################
+				// Duration
+				if($librarySectionType == "show") {					
+					$returnInt = $this->intervall(@$PlayerSteamData->duration);
+					$duration = $returnInt['hms_name'];
+				} elseif ($librarySectionType == "movie") {
+					$returnInt = $this->intervall(@$PlayerSteamData->duration);
+					$duration = $returnInt['hms_name'];
+				} elseif ($librarySectionType == "artist") {
+					$returnInt = $this->intervall(@$PlayerSteamData->duration);
+					$duration = $returnInt['hms_name'];
+				} elseif ($librarySectionType == "photo") {
+					$duration = '';
+				}
+
+				// Wenn Metadaten nicht vorhanden
+				if(empty($duration))
+					$duration = '';
+				
+				if($event <> "media.stop") {
+					$this->SetValue('duration',$duration);
+				} else {
+					$this->SetValue('duration','');
+				}
+
+				#################################################################
+				// SeasonEpisode
+				if($librarySectionType == "show") {					
+					$seasonEpisode = @$PlayerSteamData->SeasonEpisode;					
+				
+					if($event <> "media.stop") {
+						$this->SetValue('seasonEpisode',$seasonEpisode);
+					} else {
+						$this->SetValue('seasonEpisode','');
+					}
+				} else {
+					$this->SetValue('seasonEpisode','');
+				}
+
+				#################################################################
+				// Roles
+				if ($librarySectionType == "movie") {
+					$roleinfo = $metadata->Role;
+					$roleTable = $this->RoleFillTable ($roleinfo);
+					
+					if($event <> "media.stop") {
+						$this->SetValue('role',$roleTable);
+					} else {
+						$this->SetValue('role','');
+					}							
+				} else {
+					$this->SetValue('role','');
+				}
+				
+				#################################################################
+				// Director
+				$comma_separated = '';
+				if ($librarySectionType == "movie") {
+					$directorinfo = $metadata->Director;
+					if(is_countable($directorinfo)) {
+						foreach($directorinfo as $key => $director) {
+							$array_directorinfo[] = $director->tag;
+						}
+						$comma_separated = implode(", ", $array_directorinfo);
+					
+					}
+				} 
+				
+				if($event <> "media.stop") {
+					$this->SetValue('director',$comma_separated);
+				} else {
+					$this->SetValue('director','');
+				}
+
+				#################################################################
+				// Producer
+				$comma_separated = '';
+				if ($librarySectionType == "movie") {
+					$producerinfo = $metadata->Producer;
+					if(is_countable($producerinfo)) {
+						foreach($producerinfo as $key => $producer) {
+							$array_producer[] = $producer->tag;
+						}
+						$comma_separated = implode(", ", $array_producer);
+					}
+				} 
+				
+				if($event <> "media.stop") {
+					$this->SetValue('producer',$comma_separated);
+				} else {
+					$this->SetValue('producer','');
+				}				
+				
+				#################################################################
+				// Writer
+				$comma_separated = '';
+				if ($librarySectionType == "movie") {
+					$writerinfo = $metadata->Writer;
+					if(is_countable($writerinfo)) {
+						foreach($writerinfo as $key => $writer) {
+							$array_writer[] = $writer->tag;
+						}
+						$comma_separated = implode(", ", $array_writer);
+					}
+				} 
+				
+				if($event <> "media.stop") {
+					$this->SetValue('writer',$comma_separated);
+				} else {
+					$this->SetValue('writer','');
+				}	
+
+				#################################################################
+				// year
+				if($librarySectionType == "show") {					
+					$year = @$metadata->year;
+				} elseif ($librarySectionType == "movie") {
+					$year = @$metadata->year;
+				} elseif ($librarySectionType == "artist") {
+					$year = '';
+				} elseif ($librarySectionType == "photo") {
+					$year = '';
+				}
+				
+				if($event <> "media.stop") {
+					$this->SetValue('year',$year);
+				} else {
+					$this->SetValue('year','');
+				}
+
+				#################################################################								
+				// Html Overview
+				$this->GenerateHtmlOverview ();
+
+
 
 			}
 		}
@@ -448,8 +625,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		
 							if($library=='Video') {                        
 								$arrayPlayerData[$plexPlayer] = [
-									"movieFormat"      => $data[$library][$i]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
-									"soundFormat"        => $data[$library][$i]['Media']['Part']['Stream'][1]['@attributes']['displayTitle']              
+									"movieFormat"      	=> $data[$library][$i]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
+									"soundFormat"      	=> $data[$library][$i]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
+									"aspectRatio"				=> $data[$library][$i]['Media']['@attributes']['aspectRatio'],
+									"duration"					=> $data[$library][$i]['@attributes']['duration'] / 1000
 								];
 		
 								// Serie Episode zusammenbauen und ins Array Pushen
@@ -464,7 +643,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								];
 							} elseif ($library=='Track') {
 								$arrayPlayerData[$plexPlayer] = [
-									"soundFormat"    => $data[$library][$i]['Media']['Part']['Stream']['@attributes']['displayTitle']
+									"soundFormat"    => $data[$library][$i]['Media']['Part']['Stream']['@attributes']['displayTitle'],
+									"duration"			 => $data[$library][$i]['@attributes']['duration'] / 1000
 								];
 							} 
 						}
@@ -474,8 +654,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		
 						if($library=='Video') {          
 							$arrayPlayerData[$plexPlayer] = [
-								"movieFormat"      => $data[$library]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
-								"soundFormat"        => $data[$library]['Media']['Part']['Stream'][1]['@attributes']['displayTitle']           
+								"movieFormat"      	=> $data[$library]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
+								"soundFormat"      	=> $data[$library]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
+								"aspectRatio"				=> $data[$library]['Media']['@attributes']['aspectRatio'],
+								"duration"					=> $data[$library]['@attributes']['duration'] / 1000
 							];
 		
 							// Serie Episode zusammenbauen und ins Array Pushen
@@ -490,7 +672,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								];
 						} elseif ($library=='Track') {
 								$arrayPlayerData[$plexPlayer] = [
-									"soundFormat"    => $data[$library]['Media']['Part']['Stream']['@attributes']['displayTitle']
+									"soundFormat"    => $data[$library]['Media']['Part']['Stream']['@attributes']['displayTitle'],
+									"duration"			 => $data[$library]['@attributes']['duration'] / 1000
 								];
 						} 
 					}
@@ -564,5 +747,165 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				IPS_SetMediaCached($MediaID, true);
 			}
 		}			
+
+		private function intervall($sek) 
+		{
+			$hms = sprintf(
+				'%d:%d:%d',
+				$sek / 3600 % 24,
+				$sek / 60 % 60,
+				$sek % 60
+			);
+			$ms = sprintf(			
+				'%d:%d',          
+				$sek / 60,		
+				$sek % 60
+			);
+			$hms_name = sprintf(
+				'%d Stunde%s,'.' %d Minute%s und %d Sekunde%s',
+				$sek / 3600 % 24,
+				floor($sek / 3600 % 24) != 1 ? 'n':'',
+				$sek / 60 % 60,
+				floor($sek / 60 % 60) != 1 ? 'n':'',
+				$sek % 60,
+				floor($sek % 60) != 1 ? 'n':''
+			);
+			$ms_name = sprintf(
+				'%d Minute%s und %d Sekunde%s',
+				$sek / 60,
+				floor($sek / 60) != 1 ? 'n':'',
+				$sek % 60,
+				floor($sek % 60) != 1 ? 'n':''
+			);			
+			return array(
+				"hms_name"=>	$hms_name,
+				"hms"			=>	$hms,
+				"ms_name"	=>	$ms_name,
+				"ms"			=>	$ms
+			);
+		}
+
+		private function RoleFillTable ($roleinfo)
+		{
+			$font_size_header = "25";
+			$font_size_table = "23";
+			
+			$s = '';
+			$s = $s . "<style type='text/css'>"; 
+			$s = $s . "table.test { width: 100%; border-collapse: collapse;}"; 
+			$s = $s . "Test { border: 1px outset #444455; border-color:#FF0000;}</style>";
+			$s = $s . "<table class='test'>"; 
+	
+			$s = $s . "<tr>"; 
+			$s = $s . "<td style='border-style:outset;border-width: 1px;background: #121212;font-size:$font_size_header;' colspan='1'><B>Schauspieler</td>";
+			$s = $s . "<td style='border-style:outset;border-width: 1px;background: #121212;font-size:$font_size_header;' colspan='1'><B>Rolle</td>"; 
+			$s = $s . "<td style='border-style:outset;border-width: 1px;background: #121212;font-size:$font_size_header;' colspan='1'><B>Bild</td>";
+			$s = $s . "</tr>"; 
+			
+			foreach($roleinfo as $key => $cast) {
+				if(!empty($cast->thumb)) {
+						$pic = "<img src=".$cast->thumb." width=\"150\" height=\"150\" >";
+				} else {
+						$pic = "";
+				}
+				
+				$s = $s . "<tr>"; 
+				$s = $s . "<td style='border-style:outset;border-width: 1px;font-size:$font_size_table;' colspan='1'>$cast->tag</td>"; 
+				$s = $s . "<td style='border-style:outset;border-width: 1px;text-align:left;font-size:$font_size_table;' colspan='1'>$cast->role</td>";
+				$s = $s . "<td style='border-style:outset;border-width: 1px;text-align:left;font-size:$font_size_table;' colspan='1'>$pic</td>";
+				$s = $s . "</tr>"; 
+			} 
+
+			return $s;
+		}
+
+		private function GenerateHtmlOverview () 
+		{
+			// Plex Server Daten holen
+			$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
+			$ServerPort 		 = $this->ReadPropertyString('ServerPort');
+			$ServerToken		 = $this->ReadPropertyString('ServerToken');
+
+			$librarySectionType = $this->ReadAttributeString('librarySectionType');
+			$event = $this->GetValue('event');
+
+			// Plex URL
+			if(!empty($ServerToken)) {				
+				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
+			} else {
+				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover');
+			}
+			
+
+			if($event <> 4) {
+				$s = '';
+				$s = $s . "<table style=\"border-collapse: collapse; width: 100%; \" border=\"0\">";
+				$s = $s . "<tbody>";
+
+				$s = $s . "<tr style=\"height: 35px;\">";
+				$s = $s . "<td style=\"width: 100%; height: 40px;font-size: 30px;\" colspan=\"5\"><strong>Film</strong></td>";
+				$s = $s . "</tr>";
+				$s = $s . "<tr style=\"height: 35px;\">";		
+				$s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;\" rowspan=\"12\">".'<img src='.$coverURL."\" width=\"350\"></td>";
+				$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px\" colspan=\"2\">Titel</td>";
+				$s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('title')."</td>";
+				$s = $s . "</tr>";		
+
+				$s = $s . "<tr>";
+				$s = $s . "<td style=\"text-align: left;height: 35px;font-weight: bold;font-size: 20px; \" colspan=\"3\">Beschreibung</td>";
+				$s = $s . "</tr>";
+				$s = $s . "<tr>";
+				$s = $s . "<td style=\"text-align: left;vertical-align: top;height: auto;font-size: 20px;\" colspan=\"3\">".$this->GetValue('summary')."</td>";
+				$s = $s . "</tr>";
+
+				$s = $s . "</td>";
+				$s = $s . "</tr>";
+				$s = $s . "<tr>";
+				$s = $s . "</tr>";
+				$s = $s . "<tr style=\"height: 40px;\">";
+				$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Jahr</td>";
+				$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('year')."</td>";
+				$s = $s . "</tr>";
+
+				if($librarySectionType == 'show') {
+					$s = $s . "<tr style=\"height: 40px;\">";
+					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Staffel / Episode</td>";
+					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('seasonEpisode')."</td>";
+					$s = $s . "</tr>";
+
+					$s = $s . "<tr style=\"height: 40px;\">";
+					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Name der Folge</td>";
+					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('titleEpisodeMusic')."</td>";
+					$s = $s . "</tr>";
+				}
+
+				$s = $s . "<tr style=\"height: 40px;\">";
+				$s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Bewertung</td>";
+				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('rating')."</td>";
+				$s = $s . "</tr>";
+				$s = $s . "<tr style=\"height: 40px;\">";
+				$s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Altersfreigabe</td>";
+				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('contentRating')."</td>";
+				$s = $s . "</tr>";			
+				$s = $s . "<tr style=\"height: 40px;\">";
+				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Laufzeit</td>";
+				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('duration')."</td>";
+				$s = $s . "</tr>";
+				$s = $s . "<tr style=\"height: 40px;\">";
+				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Video</td>";
+				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('movieFormat')."</td>";
+				$s = $s . "</tr>";
+				$s = $s . "<tr style=\"height: 40px;\">";
+				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Ton</td>";
+				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('soundFormat')."</td>";
+				$s = $s . "</tr>";
+				$s = $s . "</tbody>";
+				$s = $s . "</table>";
+			} else {
+				$s = "";
+			}
+
+			$this->SetValue('overview',$s);
+		}
 
 	}
