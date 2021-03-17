@@ -843,7 +843,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				$s = $s . "<tbody>";
 
 				$s = $s . "<tr style=\"height: 35px;\">";
-				$s = $s . "<td style=\"width: 100%; height: 40px;font-size: 30px;\" colspan=\"5\"><strong>Film</strong></td>";
+				$s = $s . "<td style=\"width: 100%; height: 40px;font-size: 30px;\" colspan=\"5\"><strong>".$librarySectionType."</strong></td>";
 				$s = $s . "</tr>";
 				$s = $s . "<tr style=\"height: 35px;\">";		
 				$s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;\" rowspan=\"12\">".'<img src='.$coverURL."\" width=\"350\"></td>";
