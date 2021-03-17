@@ -836,6 +836,16 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover');
 			}
 			
+			$title = $this->GetValue('title');
+			$summary = $this->GetValue('summary');
+			$year = $this->GetValue('year');
+			$seasonEpisode = $this->GetValue('seasonEpisode');
+			$titleEpisodeMusic = $this->GetValue('titleEpisodeMusic');
+			$rating = $this->GetValue('rating');
+			$contentRating = $this->GetValue('contentRating');
+			$duration = $this->GetValue('duration');
+			$movieFormat = $this->GetValue('movieFormat');
+			$soundFormat = $this->GetValue('soundFormat');
 
 			if($event <> 4) {
 				$s = '';
@@ -846,16 +856,16 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				$s = $s . "<td style=\"width: 100%; height: 40px;font-size: 30px;\" colspan=\"5\"><strong>".$librarySectionType."</strong></td>";
 				$s = $s . "</tr>";
 				$s = $s . "<tr style=\"height: 35px;\">";		
-				$s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;\" rowspan=\"12\">".'<img src='.$coverURL."\" width=\"350\"></td>";
+				$s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;padding-right: 20px; \" rowspan=\"12\">".'<img src='.$coverURL."\" width=\"350\"></td>";
 				$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px\" colspan=\"2\">Titel</td>";
-				$s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('title')."</td>";
+				$s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 20px; \" colspan=\"2\">".$title."</td>";
 				$s = $s . "</tr>";		
 
 				$s = $s . "<tr>";
 				$s = $s . "<td style=\"text-align: left;height: 35px;font-weight: bold;font-size: 20px; \" colspan=\"3\">Beschreibung</td>";
 				$s = $s . "</tr>";
 				$s = $s . "<tr>";
-				$s = $s . "<td style=\"text-align: left;vertical-align: top;height: auto;font-size: 20px;\" colspan=\"3\">".$this->GetValue('summary')."</td>";
+				$s = $s . "<td style=\"text-align: left;vertical-align: top;height: auto;font-size: 20px;\" colspan=\"3\">".$summary."</td>";
 				$s = $s . "</tr>";
 
 				$s = $s . "</td>";
@@ -864,40 +874,40 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				$s = $s . "</tr>";
 				$s = $s . "<tr style=\"height: 40px;\">";
 				$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Jahr</td>";
-				$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('year')."</td>";
+				$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$year."</td>";
 				$s = $s . "</tr>";
 
 				if($librarySectionType == 'show') {
 					$s = $s . "<tr style=\"height: 40px;\">";
 					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Staffel / Episode</td>";
-					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('seasonEpisode')."</td>";
+					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$seasonEpisode."</td>";
 					$s = $s . "</tr>";
 
 					$s = $s . "<tr style=\"height: 40px;\">";
 					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Name der Folge</td>";
-					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('titleEpisodeMusic')."</td>";
+					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$titleEpisodeMusic."</td>";
 					$s = $s . "</tr>";
 				}
 
 				$s = $s . "<tr style=\"height: 40px;\">";
 				$s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Bewertung</td>";
-				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('rating')."</td>";
+				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$rating."</td>";
 				$s = $s . "</tr>";
 				$s = $s . "<tr style=\"height: 40px;\">";
 				$s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Altersfreigabe</td>";
-				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('contentRating')."</td>";
+				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$contentRating."</td>";
 				$s = $s . "</tr>";			
 				$s = $s . "<tr style=\"height: 40px;\">";
 				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Laufzeit</td>";
-				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('duration')."</td>";
+				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$duration."</td>";
 				$s = $s . "</tr>";
 				$s = $s . "<tr style=\"height: 40px;\">";
 				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Video</td>";
-				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('movieFormat')."</td>";
+				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$movieFormat."</td>";
 				$s = $s . "</tr>";
 				$s = $s . "<tr style=\"height: 40px;\">";
 				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Ton</td>";
-				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->GetValue('soundFormat')."</td>";
+				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$soundFormat."</td>";
 				$s = $s . "</tr>";
 				$s = $s . "</tbody>";
 				$s = $s . "</table>";
