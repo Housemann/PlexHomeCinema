@@ -46,9 +46,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			// Titel
 			$this->Variable_Register('title', $this->translate('Title'), '', '', 3, false, 1);
 			// Titel Staffel/Album
-			$this->Variable_Register('titleSeasonAlbum', $this->translate('Season/Album'), '', '', 3, false, 2);
+			$this->Variable_Register('titleSeasonAlbum', $this->translate('Season / Album'), '', '', 3, false, 2);
 			// Titel Episode/Musik
-			$this->Variable_Register('titleEpisodeMusic', $this->translate('Episode/Music'), '', '', 3, false, 3);
+			$this->Variable_Register('titleEpisodeMusic', $this->translate('Episode / Music'), '', '', 3, false, 3);
 			// Mediathekname und MediathekId
 			$this->Variable_Register('MediaLibraryName', $this->translate('Media library Name'), '', '', 3, false, 4);
 			$this->Variable_Register('MediaLibraryId', $this->translate('Media library ID'), '', '', 3, false, 5);
@@ -69,7 +69,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			// Cover
 			$this->Variable_Register('cover', $this->translate('Cover'), '', '', 3, false, 11);
 			// Cover Serie
-			$this->Variable_Register('coverSeasonAlbum', $this->translate('Cover Season/Album'), '', '', 3, false, 12);
+			$this->Variable_Register('coverSeasonAlbum', $this->translate('Cover Season / Album'), '', '', 3, false, 12);
 			// Fanart
 			$this->Variable_Register('coverFanart', $this->translate('Fanart'), '', '', 3, false, 13);
 			// Movie Format
