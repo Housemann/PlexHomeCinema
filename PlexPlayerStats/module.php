@@ -25,6 +25,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 			$this->RegisterAttributeString('librarySectionType','');
 
+			// IP-Symcon IP und Port
+			$this->RegisterPropertyString('IpsIPAddress','');
+			$this->RegisterPropertyString('IpsPort', '');
+
 			#############################################################################################
 			// Variablen und Profile anlegen
 			#############################################################################################
@@ -74,8 +78,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->Variable_Register('soundFormat', $this->translate('Sound Format'), '', '', 3, false, 15);
 			// Aspect Ratio
 			$this->Variable_Register('aspectRatio', $this->translate('Aspect Ratio'), '', '', 3, false, 16);
-			// Aspect Ratio
-			$this->Variable_Register('aspectRatio', $this->translate('Aspect Ratio'), '', '', 3, false, 17);
 			// Total Duration
 			$this->Variable_Register('duration', $this->translate('Total Duration'), '', '', 3, false, 18);
 			// Director
@@ -567,8 +569,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 							$ratingImage_pic  = substr($ratingImage,strripos($ratingImage,".")+1,10);
 							$this->SetValue('rating',strval($metadata->rating * 10).' %');
 							$this->SetValue('ratingImage',$ratingImage_host."_".$ratingImage_pic);
-						} elseif($ratingImage_host=="imdb") {
-							$ratingImage_pic  = substr($ratingImage,strripos($ratingImage,".")+1,10);
+						} else {							
 							$this->SetValue('rating','');
 							$this->SetValue('ratingImage','');
 						}					
@@ -593,6 +594,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 						$this->SetValue('audienceRating','');
 						$this->SetValue('audienceRatingImage','');
 					}
+				} else {
+					$this->SetValue('rating','');
+					$this->SetValue('ratingImage','');
+					$this->SetValue('audienceRating','');
+					$this->SetValue('audienceRatingImage','');
 				}
 
 				#################################################################
@@ -739,7 +745,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Copy Files
 				$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/PlexPlayerStats/img/';
 				$DestPath   = IPS_GetKernelDir().'webfront/user/PlexCover/';
-				$files = 'plex_cover.jpg,plex_fanart.jpg';
+				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png';
 
 				foreach(explode(",",$files) as $file) {
 				  if (!copy($TargetPath.$file, $DestPath.$file)) {
@@ -856,100 +862,149 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		private function GenerateHtmlOverview () 
 		{
 			// Plex Server Daten holen
-			$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
-			$ServerPort 		 = $this->ReadPropertyString('ServerPort');
-			$ServerToken		 = $this->ReadPropertyString('ServerToken');
+			$ServerIPAddress 			= $this->ReadPropertyString('ServerIPAddress');
+			$ServerPort 		 			= $this->ReadPropertyString('ServerPort');
+			$ServerToken		 			= $this->ReadPropertyString('ServerToken');
+			
+			$IpsIpAdress 					= $this->ReadPropertyString('IpsIPAddress');
+			$IpsPort 							= $this->ReadPropertyString('IpsPort');
 
-			$librarySectionType = $this->ReadAttributeString('librarySectionType');
-			$event = GetValueFormatted($this->GetIDForIdent('event'));
+			// Variablen auslesen
+			$librarySectionType 	= $this->ReadAttributeString('librarySectionType');
+			$event 								= GetValueFormatted($this->GetIDForIdent('event'));
+			$title 								= $this->GetValue('title');
+			$summary 							= $this->GetValue('summary');
+			$year 								= $this->GetValue('year');
+			$seasonEpisode 				= $this->GetValue('seasonEpisode');
+			$titleEpisodeMusic 		= $this->GetValue('titleEpisodeMusic');			
+			$contentRating 				= $this->GetValue('contentRating');
+			$duration 						= $this->GetValue('duration');
+			$movieFormat 					= $this->GetValue('movieFormat');
+			$soundFormat 					= $this->GetValue('soundFormat');
+			
+			$rating 							= $this->GetValue('rating');
+			$ratingImage 					= $this->GetValue('ratingImage');
+			$audienceRating 			= $this->GetValue('audienceRating');
+			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');
 
-			// Plex URL
+
+			$MyRatingUrl 					= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/'.$ratingImage.'.png';
+			$MyaudienceRatingUrl 	= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/'.$audienceRatingImage.'.png';
+			$MyRating 						= '<img src='.$MyRatingUrl." width=\"40\" hight=\"40\">";
+			$MyaudienceRating 		= '<img src='.$MyaudienceRatingUrl." width=\"40\" hight=\"40\">";
+			
+
+			// Plex URL bauen
 			if(!empty($ServerToken)) {				
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
+				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
 			} else {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover');
+				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum');
+			}		
+
+			// andres Cover holen wenn Artist
+			if($librarySectionType !== "artist") {
+				$cover = $coverURL;
+			} else {
+				$cover = $coverSeasonAlbum;
 			}
 			
-			$title = $this->GetValue('title');
-			$summary = $this->GetValue('summary');
-			$year = $this->GetValue('year');
-			$seasonEpisode = $this->GetValue('seasonEpisode');
-			$titleEpisodeMusic = $this->GetValue('titleEpisodeMusic');
-			$rating = $this->GetValue('rating');
-			$contentRating = $this->GetValue('contentRating');
-			$duration = $this->GetValue('duration');
-			$movieFormat = $this->GetValue('movieFormat');
-			$soundFormat = $this->GetValue('soundFormat');
+			// Tabelle aufbauen
+			$s = '';
+			if($librarySectionType !== "photo") {
+				if($event <> "Stop") {					
+	        $s = $s . "<table style=\"border-collapse: collapse; width: 100%; \" border=\"0\">";
+	        $s = $s . "<tbody>";
 
-			if($event <> "Stop") {
-				$s = '';
-				$s = $s . "<table style=\"border-collapse: collapse; width: 100%; \" border=\"0\">";
-				$s = $s . "<tbody>";
+	        $s = $s . "<tr style=\"height: 35px;\">";		
+	        $s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;padding-right:20px\" rowspan=\"13\">".'<img src='.$cover."\" width=\"350\"></td>";
+	        
+	        $s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\"></td>";
+	        $s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 35px;\" colspan=\"2\">".$this->translate(ucfirst($librarySectionType))."</td>";
+	        $s = $s . "</tr>";
 
-				$s = $s . "<tr style=\"height: 35px;\">";
-				$s = $s . "<td style=\"width: 100%; height: 40px;font-size: 30px;\" colspan=\"5\"><strong>".$librarySectionType."</strong></td>";
-				$s = $s . "</tr>";
-				$s = $s . "<tr style=\"height: 35px;\">";		
-				$s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;padding-right: 20px; \" rowspan=\"12\">".'<img src='.$coverURL."\" width=\"350\"></td>";
-				$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px\" colspan=\"2\">Titel</td>";
-				$s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 20px; \" colspan=\"2\">".$title."</td>";
-				$s = $s . "</tr>";		
+	        $s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Title")."</td>";
+	        $s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$title."</td>";
+	        $s = $s . "</tr>";
+	        
+					if($librarySectionType !== "artist") {
+						$s = $s . "<tr>";
+						$s = $s . "<td style=\"text-align: left;height: 35px;font-weight: bold;font-size: 20px; \" colspan=\"3\">".$this->translate("Summary")."</td>";
+						$s = $s . "</tr>";
+						$s = $s . "<tr>";
+		        $s = $s . "<td style=\"text-align: left;vertical-align: top;height: auto;font-size: 16px;\" colspan=\"3\">".$summary."</td>";
+		        $s = $s . "</tr>";
+					}
 
-				$s = $s . "<tr>";
-				$s = $s . "<td style=\"text-align: left;height: 35px;font-weight: bold;font-size: 20px; \" colspan=\"3\">Beschreibung</td>";
-				$s = $s . "</tr>";
-				$s = $s . "<tr>";
-				$s = $s . "<td style=\"text-align: left;vertical-align: top;height: auto;font-size: 20px;\" colspan=\"3\">".$summary."</td>";
-				$s = $s . "</tr>";
+					if($librarySectionType !== "artist") {
+		        $s = $s . "<tr style=\"height: 40px;\">";
+		        $s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Year")."</td>";
+		        $s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$year."</td>";
+		        $s = $s . "</tr>";
+					}
 
-				$s = $s . "</td>";
-				$s = $s . "</tr>";
-				$s = $s . "<tr>";
-				$s = $s . "</tr>";
-				$s = $s . "<tr style=\"height: 40px;\">";
-				$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Jahr</td>";
-				$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$year."</td>";
-				$s = $s . "</tr>";
+	        if($librarySectionType == 'show') {
+	            $s = $s . "<tr style=\"height: 40px;\">";
+	            $s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Season/Episode")."</td>";
+	            $s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$seasonEpisode."</td>";
+	            $s = $s . "</tr>";
 
-				if($librarySectionType == 'show') {
-					$s = $s . "<tr style=\"height: 40px;\">";
-					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Staffel / Episode</td>";
-					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$seasonEpisode."</td>";
-					$s = $s . "</tr>";
+	            $s = $s . "<tr style=\"height: 40px;\">";
+	            $s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Episode Name")."</td>";
+	            $s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$titleEpisodeMusic."</td>";
+	            $s = $s . "</tr>";
+	        }
 
-					$s = $s . "<tr style=\"height: 40px;\">";
-					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Name der Folge</td>";
-					$s = $s . "<td style=\"width: 20%; height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$titleEpisodeMusic."</td>";
-					$s = $s . "</tr>";
+					if($librarySectionType !== "artist") {
+		        $s = $s . "<tr style=\"height: 40px;\">";
+		        $s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px; \" colspan=\"2\">".$this->translate("Rating")."</td>";		        
+						$s = $s . "<td style=\" height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px; \" colspan=\"2\">";
+
+						// Nicht immer jede Bewertung vorhanden
+						if(!empty($audienceRatingImage) && substr($audienceRatingImage,0,14) == "rottentomatoes" && !empty($ratingImage) && substr($audienceRatingImage,0,14) == "rottentomatoes") {
+							// Rating und Audience Rating == true && Rotten
+							$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px;>".$rating."</td><td width=50px>".$MyRating."</td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";
+						} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,14) == "rottentomatoes" && empty($ratingImage)) {
+							// Rating == false und Audience Rating == true && Rotten
+							$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";
+						} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,4) == "imdb") {
+							// Rating == false und Audience Rating == true && IMDB
+							$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";
+						}
+						$s = $s . "</td>";
+						$s = $s . "</tr>";
+
+		        $s = $s . "<tr style=\"height: 40px;\">";
+		        $s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Content Rating")."</td>";
+		        $s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$contentRating."</td>";
+		        $s = $s . "</tr>";			
+					}
+
+	        $s = $s . "<tr style=\"height: 40px;\">";
+	        $s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Duration")."</td>";
+	        $s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$duration."</td>";
+	        $s = $s . "</tr>";
+
+					if($librarySectionType !== "artist") {
+		        $s = $s . "<tr style=\"height: 40px;\">";
+		        $s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Video")."</td>";
+		        $s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$movieFormat."</td>";
+		        $s = $s . "</tr>";
+					}
+
+	        $s = $s . "<tr style=\"height: 40px;\">";
+	        $s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 0px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Sound")."</td>";
+	        $s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 0px solid white;font-size: 16px;\" colspan=\"2\">".$soundFormat."</td>";
+	        $s = $s . "</tr>";
+
+	        $s = $s . "</tbody>";
+	        $s = $s . "</table>";
+				} else {
+					$s = "";
 				}
-
-				$s = $s . "<tr style=\"height: 40px;\">";
-				$s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Bewertung</td>";
-				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$rating."</td>";
-				$s = $s . "</tr>";
-				$s = $s . "<tr style=\"height: 40px;\">";
-				$s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Altersfreigabe</td>";
-				$s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$contentRating."</td>";
-				$s = $s . "</tr>";			
-				$s = $s . "<tr style=\"height: 40px;\">";
-				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Laufzeit</td>";
-				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$duration."</td>";
-				$s = $s . "</tr>";
-				$s = $s . "<tr style=\"height: 40px;\">";
-				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Video</td>";
-				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$movieFormat."</td>";
-				$s = $s . "</tr>";
-				$s = $s . "<tr style=\"height: 40px;\">";
-				$s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">Ton</td>";
-				$s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$soundFormat."</td>";
-				$s = $s . "</tr>";
-				$s = $s . "</tbody>";
-				$s = $s . "</table>";
-			} else {
-				$s = "";
+				$this->SetValue('overview',$s);
 			}
-
-			$this->SetValue('overview',$s);
 		}
 
 	}
