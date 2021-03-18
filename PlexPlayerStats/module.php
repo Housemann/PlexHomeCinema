@@ -989,11 +989,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 						}
 						$s = $s . "</td>";
 						$s = $s . "</tr>";
-
-		        $s = $s . "<tr style=\"height: 40px;\">";
-		        $s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Content Rating")."</td>";
-		        $s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$contentRatingString."</td>";
-		        $s = $s . "</tr>";			
+						
+						if(!empty($contentRating)) {
+			        $s = $s . "<tr style=\"height: 40px;\">";
+			        $s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Content Rating")."</td>";
+			        $s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$contentRatingString."</td>";
+			        $s = $s . "</tr>";
+						}
 					}
 
 	        $s = $s . "<tr style=\"height: 40px;\">";
