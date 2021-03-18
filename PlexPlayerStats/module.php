@@ -887,14 +887,30 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ratingImage 					= $this->GetValue('ratingImage');
 			$audienceRating 			= $this->GetValue('audienceRating');
 			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');
-			$MyRatingUrl 					= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/'.$ratingImage.'.png';
-			$MyaudienceRatingUrl 	= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/'.$audienceRatingImage.'.png';
+
+			
+			// Connect Dienst und URL auslesen
+			$connectControlId = @IPS_GetInstanceListByModuleID ("{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}")[0];
+			$IsActive = json_decode(IPS_GetConfiguration($connectControlId));
+			 
+			if($IsActive->Active) {
+				$Url = CC_GetUrl($connectControlId);
+			} else {
+				$Url = 'http://'.$IpsIpAdress.':'.$IpsPort;
+			}
+			
+			// Cover laden
+			$MyRatingUrl 					= $Url.'/user/PlexCover/'.$ratingImage.'.png';
+			$MyaudienceRatingUrl 	= $Url.'/user/PlexCover/'.$audienceRatingImage.'.png';
+			
+			// Rating bauen
 			$MyRating 						= '<img src='.$MyRatingUrl." width=\"40\" hight=\"40\">";
 			$MyaudienceRating 		= '<img src='.$MyaudienceRatingUrl." width=\"40\" hight=\"40\">";
 
+			// Altersfreigabe bauen
 			$contentRating 				= $this->GetValue('contentRating');
 			$contentRatingNr			= preg_replace('![^0-9]!', '', $contentRating);
-			$MycontentRatingUrl		= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/FSK_'.$contentRatingNr.'.png';
+			$MycontentRatingUrl		= $Url.'/user/PlexCover/FSK_'.$contentRatingNr.'.png';
 
 			// Plex URL bauen
 			if(!empty($ServerToken)) {				
