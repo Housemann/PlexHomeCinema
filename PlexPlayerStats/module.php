@@ -470,7 +470,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				#################################################################
 				// Roles
 				if ($librarySectionType == "movie") {
-					$roleinfo = $metadata->Role;
+					$roleinfo = @$metadata->Role;
 					$roleTable = $this->RoleFillTable ($roleinfo);
 					
 					if($event <> "media.stop") {
@@ -486,7 +486,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Director
 				$comma_separated = '';
 				if ($librarySectionType == "movie") {
-					$directorinfo = $metadata->Director;
+					$directorinfo = @$metadata->Director;
 					if(is_countable($directorinfo)) {
 						foreach($directorinfo as $key => $director) {
 							$array_directorinfo[] = $director->tag;
@@ -506,7 +506,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Producer
 				$comma_separated = '';
 				if ($librarySectionType == "movie") {
-					$producerinfo = $metadata->Producer;
+					$producerinfo = @$metadata->Producer;
 					if(is_countable($producerinfo)) {
 						foreach($producerinfo as $key => $producer) {
 							$array_producer[] = $producer->tag;
@@ -525,7 +525,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Writer
 				$comma_separated = '';
 				if ($librarySectionType == "movie") {
-					$writerinfo = $metadata->Writer;
+					$writerinfo = @$metadata->Writer;
 					if(is_countable($writerinfo)) {
 						foreach($writerinfo as $key => $writer) {
 							$array_writer[] = $writer->tag;
@@ -826,7 +826,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		}
 
 		private function RoleFillTable ($roleinfo)
-		{
+		{			
 			$font_size_header = "25";
 			$font_size_table = "23";
 			
@@ -842,19 +842,21 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$s = $s . "<td style='border-style:outset;border-width: 1px;background: #121212;font-size:$font_size_header;' colspan='1'><B>Bild</td>";
 			$s = $s . "</tr>"; 
 			
-			foreach($roleinfo as $key => $cast) {
-				if(!empty($cast->thumb)) {
-						$pic = "<img src=".$cast->thumb." width=\"150\" height=\"150\" >";
-				} else {
-						$pic = "";
-				}
-				
-				$s = $s . "<tr>"; 
-				$s = $s . "<td style='border-style:outset;border-width: 1px;font-size:$font_size_table;' colspan='1'>$cast->tag</td>"; 
-				$s = $s . "<td style='border-style:outset;border-width: 1px;text-align:left;font-size:$font_size_table;' colspan='1'>$cast->role</td>";
-				$s = $s . "<td style='border-style:outset;border-width: 1px;text-align:left;font-size:$font_size_table;' colspan='1'>$pic</td>";
-				$s = $s . "</tr>"; 
-			} 
+			if(!empty($roleinfo)) {
+				foreach($roleinfo as $key => $cast) {
+					if(!empty($cast->thumb)) {
+							$pic = "<img src=".$cast->thumb." width=\"150\" height=\"150\" >";
+					} else {
+							$pic = "";
+					}
+					
+					$s = $s . "<tr>"; 
+					$s = $s . "<td style='border-style:outset;border-width: 1px;font-size:$font_size_table;' colspan='1'>$cast->tag</td>"; 
+					$s = $s . "<td style='border-style:outset;border-width: 1px;text-align:left;font-size:$font_size_table;' colspan='1'>$cast->role</td>";
+					$s = $s . "<td style='border-style:outset;border-width: 1px;text-align:left;font-size:$font_size_table;' colspan='1'>$pic</td>";
+					$s = $s . "</tr>"; 
+				} 
+			}
 
 			return $s;
 		}
