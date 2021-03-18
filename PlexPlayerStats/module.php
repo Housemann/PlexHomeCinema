@@ -917,11 +917,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			} elseif(!empty($ServerToken) && empty($PlexUrl)) {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
-				IPS_LogMessage("test1", "geht rein");
 			} else {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover');
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum');
-				IPS_LogMessage("test2", "geht rein");
 			}		
 
 			// andres Cover holen wenn Artist
@@ -950,7 +948,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 	        $s = $s . "<tbody>";
 
 	        $s = $s . "<tr style=\"height: 35px;\">";		
-	        $s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;padding-right:20px\" rowspan=\"13\">".'<img src='.$cover."\" width=\"350\"></td>";
+	        $s = $s . "<td style=\"width: 20%; height: 18px;text-align: center;padding-right:20px\" rowspan=\"13\">".'<img src='.$cover." width=\"350\"></td>";
 	        
 	        $s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\"></td>";
 	        $s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 35px;\" colspan=\"2\">".$this->translate(ucfirst($librarySectionType))."</td>";
