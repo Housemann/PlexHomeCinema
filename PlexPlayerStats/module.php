@@ -20,10 +20,14 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->RegisterPropertyString('playerPlatform', '');
 
 			$this->RegisterAttributeString('librarySectionType','');
+			$this->RegisterAttributeString('PlexIpAdress','');
+			$this->RegisterAttributeString('PlexPort','');
+			$this->RegisterAttributeString('PlexToken','');
+			$this->RegisterAttributeString('PlexExtUrl','');
 
 			// IP-Symcon IP und Port
-			$this->RegisterPropertyString('IpsIPAddress','');
-			$this->RegisterPropertyString('IpsPort', '');
+			$this->RegisterAttributeString('IpsIPAddress','');
+			$this->RegisterAttributeString('IpsPort','');
 
 			#############################################################################################
 			// Variablen und Profile anlegen
@@ -88,10 +92,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->Variable_Register('year', $this->translate('Year'), '', '', 3, false, 24);
 			// Role
 			$this->Variable_Register('role', $this->translate('Role'), '~HTMLBox', '', 3, false, 25);
-			
-			
-
-
 			// Overview
 			$this->Variable_Register('overview', $this->translate('Overview'), '~HTMLBox', '', 3, false, 50);
 		
@@ -118,7 +118,19 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		{
 			$data = json_decode($JSONString);
 			IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
-			
+
+			// Plex Server Daten aus Configurator holen
+			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
+			// Propertys aus Konfigurator in Attribute schreiben
+			$this->WriteAttributeString('PlexIpAdress', IPS_GetProperty($InstanceIDConf, 'IPAddress'));
+			$this->WriteAttributeString('PlexPort', IPS_GetProperty($InstanceIDConf, 'Port'));
+			$this->WriteAttributeString('PlexToken', IPS_GetProperty($InstanceIDConf, 'Token'));
+			$this->WriteAttributeString('PlexExtUrl', IPS_GetProperty($InstanceIDConf, 'PlexUrl'));
+
+			$this->WriteAttributeString('IpsIPAddress', IPS_GetProperty($InstanceIDConf, 'IpsIpAddress'));
+			$this->WriteAttributeString('IpsPort', IPS_GetProperty($InstanceIDConf, 'IpsPort'));
+
+			// Daten verarbeiten
 			$this->ReadAndProcessData(utf8_decode($data->Buffer));
 		}
 
@@ -599,29 +611,17 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Html Overview
 				$this->GenerateHtmlOverview ();
 
-
-
-
 			}
 		}
 
 
-
-
-
-
-
-
+		/*
 		// Not in Use
 		private function GetMetaDataFromKey (string $key) 
 		{
-			//PlexConfigurator Instance
-			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
-
-			// Plex Server Daten holen
-			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
-			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
-			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');
+			$ServerIPAddress 	= $this->ReadAttributeString('PlexIpAdress');
+			$ServerPort 			= $this->ReadAttributeString('PlexPort');
+			$ServerToken			= $this->ReadAttributeString('PlexToken');
 			
 			if(!empty($ServerToken)) {
 				$url = 'http://'.$ServerIPAddress.':'.$ServerPort.$key.'?X-Plex-Token='.$ServerToken;
@@ -633,16 +633,14 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$return = json_decode(json_encode($metadata));
 			return $return;
 		}
+		*/
 
 		private function getPlexPlayerSessionData (string $playerUUID) 
 		{
-			//PlexConfigurator Instance
-			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
-
-			// Plex Server Daten holen
-			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
-			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
-			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');			
+			$ServerIPAddress 	= $this->ReadAttributeString('PlexIpAdress');
+			$ServerPort 			= $this->ReadAttributeString('PlexPort');
+			$ServerToken			= $this->ReadAttributeString('PlexToken');	
+			#$PlexUrl					= $this->ReadAttributeString('PlexExtUrl');	
 
 			if(!empty($plexToken)) {
 				$url = 'http://'.$ServerIPAddress.':'.$ServerPort.'/status/sessions?X-Plex-Token='.$ServerToken;
@@ -726,13 +724,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 		private function CreateMediaObject (int $CatId, string $Name, string $MediaPath, string $Event, int $Fanart) 
 		{		
-			//PlexConfigurator Instance
-			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
-
-			// Plex Server Daten holen
-			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
-			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
-			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');
+			$ServerIPAddress 	= $this->ReadAttributeString('PlexIpAdress');
+			$ServerPort 			= $this->ReadAttributeString('PlexPort');
+			$ServerToken			= $this->ReadAttributeString('PlexToken');
+			#$PlexUrl					= $this->ReadAttributeString('PlexExtUrl');	
 
 			// Plex URL
 			if(!empty($ServerToken)) {
@@ -866,16 +861,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 		private function GenerateHtmlOverview () 
 		{
-			//PlexConfigurator Instance
-			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
-
-			// Plex Server Daten holen
-			$ServerIPAddress 			= IPS_GetProperty($InstanceIDConf, 'IPAddress');
-			$ServerPort 		 			= IPS_GetProperty($InstanceIDConf, 'Port');
-			$ServerToken		 			= IPS_GetProperty($InstanceIDConf, 'Token');
+			$ServerIPAddress 			= $this->ReadAttributeString('PlexIpAdress');
+			$ServerPort 					= $this->ReadAttributeString('PlexPort');
+			$ServerToken					= $this->ReadAttributeString('PlexToken');
+			$PlexUrl							= $this->ReadAttributeString('PlexExtUrl');	
 			
-			$IpsIpAdress 					= $this->ReadPropertyString('IpsIPAddress');
-			$IpsPort 							= $this->ReadPropertyString('IpsPort');
+			$IpsIpAdress 					= $this->ReadAttributeString('IpsIPAddress');
+			$IpsPort 							= $this->ReadAttributeString('IpsPort');
 
 			// Variablen auslesen
 			$librarySectionType 	= $this->ReadAttributeString('librarySectionType');
@@ -919,8 +911,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$MycontentRatingUrl		= $Url.'/user/PlexCover/FSK_'.$contentRatingNr.'.png';
 
 			// Plex URL bauen
-			// if(!empty($token) && !empty($url))  // $pic = "<img src=".str_replace("http://$ip:$port",$url,$key['thumb']).'?X-Plex-Token='.$token." width=\"150\" height=\"150\" >";
-			if(!empty($ServerToken)) {				
+			if(!empty($ServerToken) && !empty($PlexUrl)) {
+				$coverURL = $PlexUrl.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
+				$coverSeasonAlbum = $PlexUrl.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
+			} if(!empty($ServerToken) && empty($PlexUrl)) {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
 			} else {

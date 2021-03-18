@@ -11,7 +11,12 @@ declare(strict_types=1);
 			// Propertys
 			$this->RegisterPropertyString('IPAddress','');
 			$this->RegisterPropertyString('Port', '');
-			$this->RegisterPropertyString('Token', '');		
+			$this->RegisterPropertyString('Token', '');
+			$this->RegisterPropertyString('PlexUrl', '');
+
+			// IP-Symcon IP und Port
+			$this->RegisterPropertyString('IpsIpAddress','');
+			$this->RegisterPropertyString('IpsPort', '');
 		}
 
 		public function Destroy()

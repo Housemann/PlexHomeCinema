@@ -18,6 +18,28 @@
       "type": "ValidationTextBox", 
       "name": "Token", 
       "caption": "Plex Token"
+    },
+    { 
+      "type": "ValidationTextBox", 
+      "name": "PlexUrl", 
+      "caption": "Plex Externe URL"
+    },    
+    {
+      "type": "Label"
+    },    
+    {
+      "type": "Label",
+      "caption": "IP-Symcon Server Settings"
+    },
+    {  
+      "type": "ValidationTextBox", 
+      "name": "IpsIpAddress", 
+      "caption": "IP-Symcon IP-Adress"        
+    },
+    { 
+      "type": "ValidationTextBox", 
+      "name": "IpsPort", 
+      "caption": "IP-Symcon Port"      
     }
   ],
     "actions":

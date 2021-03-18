@@ -19,23 +19,6 @@
             "type": "ValidationTextBox",
             "name": "playerPlatform",
             "caption": "Player Platform"
-        },
-        {
-            "type": "Label"          
-        },        
-        {
-            "type": "Label",
-            "caption": "IP-Symcon Settings"
-        },
-        { 
-            "type": "ValidationTextBox", 
-            "name": "IpsIPAddress", 
-            "caption": "IP-Symcon IP-Adress (Only if no Connect service)"            
-        },
-        { 
-            "type": "ValidationTextBox", 
-            "name": "IpsPort", 
-            "caption": "IP-Symcon Port (Only if no Connect service)"
-        }         
+        }      
     ]
 }
