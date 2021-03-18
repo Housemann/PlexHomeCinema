@@ -942,12 +942,14 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 	        $s = $s . "</tr>";
 	        
 					if($librarySectionType !== "artist") {
-						$s = $s . "<tr>";
-						$s = $s . "<td style=\"text-align: left;height: 35px;font-weight: bold;font-size: 20px; \" colspan=\"3\">".$this->translate("Summary")."</td>";
-						$s = $s . "</tr>";
-						$s = $s . "<tr>";
-		        $s = $s . "<td style=\"text-align: left;vertical-align: top;height: auto;font-size: 16px;\" colspan=\"3\">".$summary."</td>";
-		        $s = $s . "</tr>";
+						if(!empty($summary)) {
+							$s = $s . "<tr>";
+							$s = $s . "<td style=\"text-align: left;height: 35px;font-weight: bold;font-size: 20px; \" colspan=\"3\">".$this->translate("Summary")."</td>";
+							$s = $s . "</tr>";
+							$s = $s . "<tr>";
+			        $s = $s . "<td style=\"text-align: left;vertical-align: top;height: auto;font-size: 16px;\" colspan=\"3\">".$summary."</td>";
+			        $s = $s . "</tr>";
+						}
 					}
 
 					if($librarySectionType !== "artist") {
