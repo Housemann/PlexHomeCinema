@@ -745,7 +745,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Copy Files
 				$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/PlexPlayerStats/img/';
 				$DestPath   = IPS_GetKernelDir().'webfront/user/PlexCover/';
-				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png';
+				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png,FSK_0.png,FSK_6.png,FSK_12.png,FSK_16.png,FSK_18.png';
 
 				foreach(explode(",",$files) as $file) {
 				  if (!copy($TargetPath.$file, $DestPath.$file)) {
@@ -878,8 +878,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$summary 							= $this->GetValue('summary');
 			$year 								= $this->GetValue('year');
 			$seasonEpisode 				= $this->GetValue('seasonEpisode');
-			$titleEpisodeMusic 		= $this->GetValue('titleEpisodeMusic');			
-			$contentRating 				= $this->GetValue('contentRating');
+			$titleEpisodeMusic 		= $this->GetValue('titleEpisodeMusic');						
 			$duration 						= $this->GetValue('duration');
 			$movieFormat 					= $this->GetValue('movieFormat');
 			$soundFormat 					= $this->GetValue('soundFormat');
@@ -888,13 +887,14 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ratingImage 					= $this->GetValue('ratingImage');
 			$audienceRating 			= $this->GetValue('audienceRating');
 			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');
-
-
 			$MyRatingUrl 					= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/'.$ratingImage.'.png';
 			$MyaudienceRatingUrl 	= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/'.$audienceRatingImage.'.png';
 			$MyRating 						= '<img src='.$MyRatingUrl." width=\"40\" hight=\"40\">";
 			$MyaudienceRating 		= '<img src='.$MyaudienceRatingUrl." width=\"40\" hight=\"40\">";
-			
+
+			$contentRating 				= $this->GetValue('contentRating');
+			$contentRatingNr			= preg_replace('![^0-9]!', '', $contentRating);
+			$MycontentRatingUrl		= 'http://'.$IpsIpAdress.':'.$IpsPort.'/user/PlexCover/FSK_'.$contentRatingNr.'.png';
 
 			// Plex URL bauen
 			if(!empty($ServerToken)) {				
@@ -910,6 +910,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				$cover = $coverURL;
 			} else {
 				$cover = $coverSeasonAlbum;
+			}
+
+			// Biler zu contentRating holen (nur bei filmen)
+			if($librarySectionType == "movie") {
+				$contentRatingString = '<img src='.$MycontentRatingUrl." width=\"40\" hight=\"40\">";
+			} else {
+				$contentRatingString = $contentRating;
 			}
 			
 			// Tabelle aufbauen
@@ -979,7 +986,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 		        $s = $s . "<tr style=\"height: 40px;\">";
 		        $s = $s . "<td style=\"height: 40px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Content Rating")."</td>";
-		        $s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$contentRating."</td>";
+		        $s = $s . "<td style=\"height: 40px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$contentRatingString."</td>";
 		        $s = $s . "</tr>";			
 					}
 
