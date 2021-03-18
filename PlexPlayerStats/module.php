@@ -914,7 +914,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			if(!empty($ServerToken) && !empty($PlexUrl)) {
 				$coverURL = $PlexUrl.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = $PlexUrl.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
-			} if(!empty($ServerToken) && empty($PlexUrl)) {
+			} elseif(!empty($ServerToken) && empty($PlexUrl)) {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
 				IPS_LogMessage("test1", "geht rein");
