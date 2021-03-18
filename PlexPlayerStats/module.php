@@ -755,7 +755,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			}
 		
 			// Content aus Pfad holen
-			if(!empty($MediaPath) && $Event <> "media.stop") { 
+			if(!empty($MediaPath) && $Event <> "media.stop") {
 				$Content = file_get_contents($url);
 			} else {
 				if($Fanart == 0) {

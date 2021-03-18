@@ -30,7 +30,9 @@
             "Overview":"Übersicht",
             "Movie": "Film",
             "Show": "Serie",
-            "Artist": "Musik"
+            "Artist": "Musik",
+            "Duration": "Laufzeit",
+            "Sound": "Ton"
         },
         "de_DE": {
             "Title":"Titel",
@@ -62,7 +64,9 @@
             "Overview":"Übersicht",
             "Movie": "Film",
             "Show": "Serie",
-            "Artist": "Musik"
+            "Artist": "Musik",
+            "Duration": "Laufzeit",
+            "Sound": "Ton"
         }
     }
 }
