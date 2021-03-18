@@ -917,11 +917,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			} if(!empty($ServerToken) && empty($PlexUrl)) {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
-				LogMessage("test1", "geht rein");
+				IPS_LogMessage("test1", "geht rein");
 			} else {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover');
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum');
-				LogMessage("test2", "geht rein");
+				IPS_LogMessage("test2", "geht rein");
 			}		
 
 			// andres Cover holen wenn Artist
