@@ -865,6 +865,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ServerPort 					= $this->ReadAttributeString('PlexPort');
 			$ServerToken					= $this->ReadAttributeString('PlexToken');
 			$PlexUrl							= $this->ReadAttributeString('PlexExtUrl');	
+			IPS_LogMessage("Plex1",$PlexUrl);
 			
 			$IpsIpAdress 					= $this->ReadAttributeString('IpsIPAddress');
 			$IpsPort 							= $this->ReadAttributeString('IpsPort');
@@ -914,6 +915,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			if(!empty($ServerToken) && !empty($PlexUrl)) {
 				$coverURL = $PlexUrl.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = $PlexUrl.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
+				IPS_LogMessage("Plex2",$coverURL);
+				IPS_LogMessage("Plex3",$coverSeasonAlbum);
 			} if(!empty($ServerToken) && empty($PlexUrl)) {
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
