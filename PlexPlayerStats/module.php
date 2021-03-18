@@ -914,7 +914,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 			// Biler zu contentRating holen (nur bei filmen)
 			if($librarySectionType == "movie") {
-				$contentRatingString = '<img src='.$MycontentRatingUrl." width=\"40\" hight=\"40\">";
+				if(!empty($contentRating)) {
+					$contentRatingString = '<img src='.$MycontentRatingUrl." width=\"40\" hight=\"40\">";
+				} else {
+					$contentRatingString = $contentRating;
+				}
 			} else {
 				$contentRatingString = $contentRating;
 			}
