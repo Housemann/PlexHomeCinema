@@ -52,12 +52,12 @@
         { 
             "type": "ValidationTextBox", 
             "name": "IpsIPAddress", 
-            "caption": "IP-Symcon IP-Adress"            
+            "caption": "IP-Symcon IP-Adress (Only if no Connect service)"            
         },
         { 
             "type": "ValidationTextBox", 
             "name": "IpsPort", 
-            "caption": "IP-Symcon Port"      
+            "caption": "IP-Symcon Port (Only if no Connect service)"
         }         
     ]
 }

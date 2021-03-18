@@ -95,8 +95,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			
 			
 
-			
-
 
 			// Overview
 			$this->Variable_Register('overview', $this->translate('Overview'), '~HTMLBox', '', 3, false, 50);
@@ -621,10 +619,19 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		// Not in Use
 		private function GetMetaDataFromKey (string $key) 
 		{
+			//PlexConfigurator Instance
+			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
+			#IPS_LogMessage("PlexIP",IPS_GetProperty($InstanceIDConf, 'IPAddress'));
+			#IPS_LogMessage("PlexPort",IPS_GetProperty($InstanceIDConf, 'Port'));
+			#IPS_LogMessage("PlexToken",IPS_GetProperty($InstanceIDConf, 'Token'));
+
 			// Plex Server Daten holen
-			$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
-			$ServerPort 		 = $this->ReadPropertyString('ServerPort');
-			$ServerToken		 = $this->ReadPropertyString('ServerToken');
+			#$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
+			#$ServerPort 		 = $this->ReadPropertyString('ServerPort');
+			#$ServerToken		 = $this->ReadPropertyString('ServerToken');
+			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
+			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
+			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');
 			
 			if(!empty($ServerToken)) {
 				$url = 'http://'.$ServerIPAddress.':'.$ServerPort.$key.'?X-Plex-Token='.$ServerToken;
@@ -726,10 +733,16 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 		private function CreateMediaObject (int $CatId, string $Name, string $MediaPath, string $Event, int $Fanart) 
 		{		
+			//PlexConfigurator Instance
+			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
+
 			// Plex Server Daten holen
-			$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
-			$ServerPort 		 = $this->ReadPropertyString('ServerPort');
-			$ServerToken		 = $this->ReadPropertyString('ServerToken');
+			#$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
+			#$ServerPort 		 = $this->ReadPropertyString('ServerPort');
+			#$ServerToken		 = $this->ReadPropertyString('ServerToken');
+			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
+			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
+			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');
 
 			// Plex URL
 			if(!empty($ServerToken)) {
@@ -863,10 +876,16 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 		private function GenerateHtmlOverview () 
 		{
+			//PlexConfigurator Instance
+			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
+
 			// Plex Server Daten holen
-			$ServerIPAddress 			= $this->ReadPropertyString('ServerIPAddress');
-			$ServerPort 		 			= $this->ReadPropertyString('ServerPort');
-			$ServerToken		 			= $this->ReadPropertyString('ServerToken');
+			#$ServerIPAddress 		= $this->ReadPropertyString('ServerIPAddress');
+			#$ServerPort 		 			= $this->ReadPropertyString('ServerPort');
+			#$ServerToken		 			= $this->ReadPropertyString('ServerToken');
+			$ServerIPAddress 			= IPS_GetProperty($InstanceIDConf, 'IPAddress');
+			$ServerPort 		 			= IPS_GetProperty($InstanceIDConf, 'Port');
+			$ServerToken		 			= IPS_GetProperty($InstanceIDConf, 'Token');
 			
 			$IpsIpAdress 					= $this->ReadPropertyString('IpsIPAddress');
 			$IpsPort 							= $this->ReadPropertyString('IpsPort');
@@ -913,6 +932,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$MycontentRatingUrl		= $Url.'/user/PlexCover/FSK_'.$contentRatingNr.'.png';
 
 			// Plex URL bauen
+			// if(!empty($token) && !empty($url))  // $pic = "<img src=".str_replace("http://$ip:$port",$url,$key['thumb']).'?X-Plex-Token='.$token." width=\"150\" height=\"150\" >";
 			if(!empty($ServerToken)) {				
 				$coverURL = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('cover').'?X-Plex-Token='.$ServerToken;
 				$coverSeasonAlbum = 'http://'.$ServerIPAddress.':'.$ServerPort.$this->GetValue('coverSeasonAlbum').'?X-Plex-Token='.$ServerToken;
