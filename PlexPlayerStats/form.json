@@ -25,28 +25,6 @@
         },        
         {
             "type": "Label",
-            "caption": "Plex Server Settings"
-        },
-        { 
-            "type": "ValidationTextBox", 
-            "name": "ServerIPAddress", 
-            "caption": "Loaded Plex IP-Adress"            
-        },
-        { 
-            "type": "ValidationTextBox", 
-            "name": "ServerPort", 
-            "caption": "Loaded Plex Port"      
-        },
-        { 
-            "type": "ValidationTextBox", 
-            "name": "ServerToken", 
-            "caption": "Loaded Plex Token"
-        },
-        {
-            "type": "Label"          
-        },        
-        {
-            "type": "Label",
             "caption": "IP-Symcon Settings"
         },
         { 

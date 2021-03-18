@@ -57,10 +57,7 @@ declare(strict_types=1);
 									'configuration' => [
 											'playerUUID'  		=> $Players[$i]['create']['playerUUID'],
 											'player'  				=> $Players[$i]['create']['player'],
-											'playerPlatform' 	=> $Players[$i]['create']['playerPlatform'],
-											'ServerIPAddress'	=> $plexIp,
-											'ServerPort'			=> $plexPort,										
-											'ServerToken'			=> $plexToken
+											'playerPlatform' 	=> $Players[$i]['create']['playerPlatform']
 									]
 							]
 						];

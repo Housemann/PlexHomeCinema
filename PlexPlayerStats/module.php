@@ -18,10 +18,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->RegisterPropertyString('playerUUID', '');
 			$this->RegisterPropertyString('player', '');
 			$this->RegisterPropertyString('playerPlatform', '');
-			
-			$this->RegisterPropertyString('ServerIPAddress','');
-			$this->RegisterPropertyString('ServerPort', '');
-			$this->RegisterPropertyString('ServerToken', '');
 
 			$this->RegisterAttributeString('librarySectionType','');
 
@@ -621,14 +617,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		{
 			//PlexConfigurator Instance
 			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
-			#IPS_LogMessage("PlexIP",IPS_GetProperty($InstanceIDConf, 'IPAddress'));
-			#IPS_LogMessage("PlexPort",IPS_GetProperty($InstanceIDConf, 'Port'));
-			#IPS_LogMessage("PlexToken",IPS_GetProperty($InstanceIDConf, 'Token'));
 
 			// Plex Server Daten holen
-			#$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
-			#$ServerPort 		 = $this->ReadPropertyString('ServerPort');
-			#$ServerToken		 = $this->ReadPropertyString('ServerToken');
 			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
 			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
 			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');
@@ -646,10 +636,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 		private function getPlexPlayerSessionData (string $playerUUID) 
 		{
+			//PlexConfigurator Instance
+			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
+
 			// Plex Server Daten holen
-			$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
-			$ServerPort 		 = $this->ReadPropertyString('ServerPort');
-			$ServerToken		 = $this->ReadPropertyString('ServerToken');
+			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
+			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
+			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');			
 
 			if(!empty($plexToken)) {
 				$url = 'http://'.$ServerIPAddress.':'.$ServerPort.'/status/sessions?X-Plex-Token='.$ServerToken;
@@ -737,9 +730,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
 
 			// Plex Server Daten holen
-			#$ServerIPAddress = $this->ReadPropertyString('ServerIPAddress');
-			#$ServerPort 		 = $this->ReadPropertyString('ServerPort');
-			#$ServerToken		 = $this->ReadPropertyString('ServerToken');
 			$ServerIPAddress = IPS_GetProperty($InstanceIDConf, 'IPAddress');
 			$ServerPort 		 = IPS_GetProperty($InstanceIDConf, 'Port');
 			$ServerToken		 = IPS_GetProperty($InstanceIDConf, 'Token');
@@ -880,9 +870,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
 
 			// Plex Server Daten holen
-			#$ServerIPAddress 		= $this->ReadPropertyString('ServerIPAddress');
-			#$ServerPort 		 			= $this->ReadPropertyString('ServerPort');
-			#$ServerToken		 			= $this->ReadPropertyString('ServerToken');
 			$ServerIPAddress 			= IPS_GetProperty($InstanceIDConf, 'IPAddress');
 			$ServerPort 		 			= IPS_GetProperty($InstanceIDConf, 'Port');
 			$ServerToken		 			= IPS_GetProperty($InstanceIDConf, 'Token');
