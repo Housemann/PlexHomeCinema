@@ -34,7 +34,9 @@
             "Duration": "Laufzeit",
             "Sound": "Ton",
             "IP-Symcon IP-Adress (Only if no Connect service)": "IP-Symcon IP-Adress (nur wenn kein Connect Dienst)",
-            "IP-Symcon Port (Only if no Connect service)": "IP-Symcon Port (nur wenn kein Connect Dienst)"
+            "IP-Symcon Port (Only if no Connect service)": "IP-Symcon Port (nur wenn kein Connect Dienst)",
+            "Script": "Skript",
+            "Custom script": "Eigenes Skript"
         },
         "de_DE": {
             "Title":"Titel",
@@ -70,7 +72,9 @@
             "Duration": "Laufzeit",
             "Sound": "Ton",
             "IP-Symcon IP-Adress (Only if no Connect service)": "IP-Symcon IP-Adress (nur wenn kein Connect Dienst)",
-            "IP-Symcon Port (Only if no Connect service)": "IP-Symcon Port (nur wenn kein Connect Dienst)"
+            "IP-Symcon Port (Only if no Connect service)": "IP-Symcon Port (nur wenn kein Connect Dienst)",
+            "Script": "Skript",
+            "Custom script": "Eigenes Skript"
         }
     }
 }

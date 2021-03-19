@@ -19,6 +19,20 @@
             "type": "ValidationTextBox",
             "name": "playerPlatform",
             "caption": "Player Platform"
-        }      
+        },
+        { 
+            "type": "Label", 
+            "label": "_______________________________________________________________________________________________________________________________________________________" 
+        },
+        { 
+            "type": "SelectScript", 
+            "name": "OwnScriptID", 
+            "caption": "Script" 
+        },
+        { 
+            "type": "CheckBox", 
+            "name": "OwnScriptAktive", 
+            "caption": "Custom script" 
+        }
     ]
 }

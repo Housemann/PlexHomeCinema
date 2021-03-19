@@ -18,7 +18,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->RegisterPropertyString('playerUUID', '');
 			$this->RegisterPropertyString('player', '');
 			$this->RegisterPropertyString('playerPlatform', '');
+			$this->RegisterPropertyInteger('OwnScriptID', 0);
+			$this->RegisterPropertyBoolean('OwnScriptAktive', false);
 
+			// Attributes
 			$this->RegisterAttributeString('librarySectionType','');
 			$this->RegisterAttributeString('PlexIpAdress','');
 			$this->RegisterAttributeString('PlexPort','');
@@ -150,7 +153,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			if($playerUUID === $this->ReadPropertyString('playerUUID')) {
 				// ZusatzInfos laden
 				$ArraySessionData = $this->getPlexPlayerSessionData ($playerUUID);
-				$PlayerSteamData  = json_decode(json_encode($ArraySessionData));			
+				$PlayerSteamData  = json_decode(json_encode($ArraySessionData));
+				
+				// Array fuer Message
+				$arrayMessage['PLEX_Player'] = IPS_GetName($this->InstanceID);
+				$arrayMessage['PLEX_LibrarySectionType'] = $librarySectionType;
 
 				#################################################################
 				// Event
@@ -167,6 +174,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				} elseif($event === "media.rate") {
 					$this->SetValue('event',5);
 				} 
+
+				// Array fuer Message
+				$arrayMessage['PLEX_Event'] = $event;
 
 				#################################################################
 				// Titel
@@ -186,6 +196,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$this->SetValue('title','');
 				}				
 
+				// Array fuer Message
+				if(!empty($title) || $title !== NULL) {
+					$arrayMessage['PLEX_Title'] = $title;
+				} else {
+					$arrayMessage['PLEX_Title'] = '';
+				}
+
 				#################################################################
 				// Titel Staffel/Album
 				if($librarySectionType == "show") {
@@ -204,6 +221,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$this->SetValue('titleSeasonAlbum','');
 				}			
 
+				// Array fuer Message
+				if(!empty($titleSeasonAlbum) || $titleSeasonAlbum !== NULL) {
+					$arrayMessage['PLEX_SeasonAlbum'] = $titleSeasonAlbum;
+				} else {
+					$arrayMessage['PLEX_SeasonAlbum'] = '';
+				}
+				
 				#################################################################
 				// Titel Episode/Musik
 				if($librarySectionType == "show") {
@@ -220,7 +244,14 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$this->SetValue('titleEpisodeMusic',$titleEpisodeMusic);
 				} else {
 					$this->SetValue('titleEpisodeMusic','');
-				}						
+				}
+
+				// Array fuer Message
+				if(!empty($titleEpisodeMusic) || $titleEpisodeMusic !== NULL) {
+					$arrayMessage['PLEX_TitleEpisodeMusic'] = $titleEpisodeMusic;
+				} else {
+					$arrayMessage['PLEX_TitleEpisodeMusic'] = '';
+				}
 
 				#################################################################
 				// Veröffentlichungs-Datum				
@@ -256,7 +287,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$this->SetValue('contentRating',$contentRating);
 				} else {
 					$this->SetValue('contentRating', '');
-				}					
+				}
 
 				#################################################################				
 				// Mediathekname und MediathekId
@@ -268,6 +299,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					// Mediathekname und MediathekId
 					$this->SetValue('MediaLibraryName','');
 					$this->SetValue('MediaLibraryId','');
+				}
+
+				// Array fuer Message
+				if(!empty($metadata->librarySectionTitle) || $metadata->librarySectionTitle !== NULL) {
+					$arrayMessage['PLEX_MediaLibraryName'] = $metadata->librarySectionTitle;
+				} else {
+					$arrayMessage['PLEX_MediaLibraryName'] = '';
 				}
 
 				#################################################################				
@@ -312,6 +350,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				if(empty($cover))
 					$cover = '';		
 
+				// Array fuer Message
+				if(!empty($cover) || $cover !== NULL) {
+					$arrayMessage['PLEX_Cover'] = $cover;
+				} else {
+					$arrayMessage['PLEX_Cover'] = '';
+				}
+
 				if($event <> "media.stop") {
 					$this->SetValue('cover',$cover);
 					$this->CreateMediaObject ($this->GetIDForIdent('cover'), 'Cover', $cover, $event, $Fanart=0);
@@ -325,9 +370,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				if($librarySectionType == "show") {
 					$coverSeasonAlbum = @$metadata->parentThumb;
 				} elseif ($librarySectionType == "movie") {
-					$coverSeasonAlbum = @$metadata->parentThumb;
+					$coverSeasonAlbum = @$metadata->parentThumb;				
 				} elseif ($librarySectionType == "artist") {
-					$coverSeasonAlbum = @$metadata->parentThumb;
+					$coverSeasonAlbum = @$metadata->parentThumb;				
 				} elseif ($librarySectionType == "photo") {
 					$coverSeasonAlbum = '';
 				}
@@ -335,6 +380,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Wenn Metadaten nicht vorhanden
 				if(empty($coverSeasonAlbum))
 					$coverSeasonAlbum = '';			
+
+				// Array fuer Message
+				if(!empty($coverSeasonAlbum) || $coverSeasonAlbum !== NULL) {
+					$arrayMessage['PLEX_CoverSeasonAlbum'] = $coverSeasonAlbum;
+				} else {
+					$arrayMessage['PLEX_CoverSeasonAlbum'] = '';
+				}
 
 				if($event <> "media.stop") {
 					$this->SetValue('coverSeasonAlbum',$coverSeasonAlbum);
@@ -384,6 +436,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				if(empty($movieFormat))
 					$movieFormat = '';
 				
+				// Array fuer Message
+				if(!empty($movieFormat) || $movieFormat !== NULL) {
+					$arrayMessage['PLEX_MovieFormat'] = $movieFormat;
+				} else {
+					$arrayMessage['PLEX_MovieFormat'] = '';
+				}
+					
 				if($event <> "media.stop") {
 					$this->SetValue('movieFormat',$movieFormat);
 				} else {
@@ -410,6 +469,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$this->SetValue('soundFormat',$soundFormat);
 				} else {
 					$this->SetValue('soundFormat','');
+				}
+
+				// Array fuer Message
+				if(!empty($soundFormat) || $soundFormat !== NULL) {
+					$arrayMessage['PLEX_SoundFormat'] = $soundFormat;
+				} else {
+					$arrayMessage['PLEX_SoundFormat'] = '';
 				}
 
 				#################################################################
@@ -453,6 +519,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				if(empty($duration))
 					$duration = '';
 				
+				// Array fuer Message
+				if(!empty($duration) || $duration !== NULL) {
+					$arrayMessage['PLEX_Duration'] = $duration;
+				} else {
+					$arrayMessage['PLEX_Duration'] = '';
+				}
+
 				if($event <> "media.stop") {
 					$this->SetValue('duration',$duration);
 				} else {
@@ -469,6 +542,14 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					} else {
 						$this->SetValue('seasonEpisode','');
 					}
+
+					// Array fuer Message					
+					if(!empty($seasonEpisode) || $seasonEpisode !== NULL) {
+						$arrayMessage['PLEX_SeasonEpisode'] = $seasonEpisode;
+					} else {
+						$arrayMessage['PLEX_SeasonEpisode'] = '';
+					}
+
 				} else {
 					$this->SetValue('seasonEpisode','');
 				}
@@ -607,6 +688,25 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$this->SetValue('audienceRatingImage','');
 				}
 
+				#################################################################
+				// Daten-Plex übergeben
+				$ServerIpPort			= $this->ReadAttributeString('PlexIpAdress').':'.$this->ReadAttributeString('PlexPort');
+				$ServerToken			= $this->ReadAttributeString('PlexToken');	
+				$PlexUrl					= $this->ReadAttributeString('PlexExtUrl');	
+
+				// Array fuer Message
+				$arrayMessage['PLEX_IpPort'] = $ServerIpPort;
+				$arrayMessage['PLEX_Token']  = $ServerToken;
+				$arrayMessage['PLEX_ExtUrl'] = $PlexUrl;
+
+				// Message Senden wenn Script hinterlegt
+				if($this->ReadPropertyBoolean('OwnScriptAktive') === true) {				
+					#if($event == "media.play") {
+						$this->SendMessage($arrayMessage);
+					#}
+
+				}
+				
 				#################################################################
 				// Html Overview
 				$this->GenerateHtmlOverview ();
@@ -1038,6 +1138,17 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					$s = "";
 				}
 				$this->SetValue('overview',$s);
+			}
+		}
+
+		private function SendMessage($dataAR)
+		{
+			if ($this->ReadPropertyBoolean('OwnScriptAktive') === true) {
+				$SkriptID = $this->ReadPropertyInteger('OwnScriptID');
+				IPS_LogMessage("PlexModule",json_encode($dataAR));
+				if (($SkriptID > 0) && (@IPS_ScriptExists($SkriptID) === true)) {					
+					IPS_RunScriptEx($SkriptID,$dataAR);
+				}
 			}
 		}
 
