@@ -141,576 +141,586 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		{			
 			$data = json_decode(utf8_encode($data));
 			
-			$playerUUID 					= $data->Player->uuid;
-			$event								= $data->event;
-			$librarySectionType		= $data->Metadata->librarySectionType;
-			$metadata 						= $data->Metadata;
+			// Pruefung ob Objekt librarySectionType existiert (z.B. wenn Live DVR geschaut wird.)
+			$rc = 0;
+			if(isset($data->Metadata->librarySectionType)) {
+			    $rc = 1;
+			} else {
+			    $rc = -1;
+			}
 
-			// LibryrySectionTxpe merken
-			$this->WriteAttributeString('librarySectionType',$librarySectionType);
+			if($rc>=0) {
 
-			// Player uebereinstimmung
-			if($playerUUID === $this->ReadPropertyString('playerUUID')) {
-				// ZusatzInfos laden
-				$ArraySessionData = $this->getPlexPlayerSessionData ($playerUUID);
-				$PlayerSteamData  = json_decode(json_encode($ArraySessionData));
-				
-				// Array fuer Message
-				$arrayMessage['PLEX_Player'] = IPS_GetName($this->InstanceID);
-				$arrayMessage['PLEX_LibrarySectionType'] = $librarySectionType;
+				$playerUUID 					= $data->Player->uuid;
+				$event								= $data->event;
+				$librarySectionType		= $data->Metadata->librarySectionType;
+				$metadata 						= $data->Metadata;
 
-				#################################################################
-				// Event
-				if($event === "media.play") {
-					$this->SetValue('event',0);
-				} elseif($event === "media.pause") {
-					$this->SetValue('event',1);
-				} elseif($event === "media.resume") {
-					$this->SetValue('event',2);
-				} elseif($event === "media.scrobble") {
-					$this->SetValue('event',3);
-				} elseif($event === "media.stop") {
-					$this->SetValue('event',4);
-				} elseif($event === "media.rate") {
-					$this->SetValue('event',5);
-				} 
+				// LibryrySectionTxpe merken
+				$this->WriteAttributeString('librarySectionType',$librarySectionType);
 
-				// Array fuer Message
-				$arrayMessage['PLEX_Event'] = $event;
-
-				#################################################################
-				// Titel
-				if($librarySectionType == "show") {
-					$title = @$metadata->grandparentTitle;
-				} elseif ($librarySectionType == "movie") {
-					$title = @$metadata->title;
-				} elseif ($librarySectionType == "artist") {
-					$title = @$metadata->grandparentTitle;
-				} elseif ($librarySectionType == "photo") {
-					$title = @$metadata->parentTitle;
-				}
-				
-				if($event <> "media.stop") {
-					$this->SetValue('title',$title);
-				} else {
-					$this->SetValue('title','');
-				}				
-
-				// Array fuer Message
-				if(!empty($title) || $title !== NULL) {
-					$arrayMessage['PLEX_Title'] = $title;
-				} else {
-					$arrayMessage['PLEX_Title'] = '';
-				}
-
-				#################################################################
-				// Titel Staffel/Album
-				if($librarySectionType == "show") {
-					$titleSeasonAlbum = @$metadata->parentTitle;
-				} elseif ($librarySectionType == "movie") {
-					$titleSeasonAlbum = '';
-				} elseif ($librarySectionType == "artist") {
-					$titleSeasonAlbum = @$metadata->parentTitle;
-				} elseif ($librarySectionType == "photo") {
-					$titleSeasonAlbum = '';
-				}
-
-				if($event <> "media.stop") {
-					$this->SetValue('titleSeasonAlbum',$titleSeasonAlbum);
-				} else {
-					$this->SetValue('titleSeasonAlbum','');
-				}			
-
-				// Array fuer Message
-				if(!empty($titleSeasonAlbum) || $titleSeasonAlbum !== NULL) {
-					$arrayMessage['PLEX_SeasonAlbum'] = $titleSeasonAlbum;
-				} else {
-					$arrayMessage['PLEX_SeasonAlbum'] = '';
-				}
-				
-				#################################################################
-				// Titel Episode/Musik
-				if($librarySectionType == "show") {
-					$titleEpisodeMusic = @$metadata->title;
-				} elseif ($librarySectionType == "movie") {
-					$titleEpisodeMusic = '';
-				} elseif ($librarySectionType == "artist") {
-					$titleEpisodeMusic = @$metadata->title;
-				} elseif ($librarySectionType == "photo") {
-					$titleEpisodeMusic = '';
-				}
-				
-				if($event <> "media.stop") {
-					$this->SetValue('titleEpisodeMusic',$titleEpisodeMusic);
-				} else {
-					$this->SetValue('titleEpisodeMusic','');
-				}
-
-				// Array fuer Message
-				if(!empty($titleEpisodeMusic) || $titleEpisodeMusic !== NULL) {
-					$arrayMessage['PLEX_TitleEpisodeMusic'] = $titleEpisodeMusic;
-				} else {
-					$arrayMessage['PLEX_TitleEpisodeMusic'] = '';
-				}
-
-				#################################################################
-				// Veröffentlichungs-Datum				
-				if($librarySectionType == "show") {
-					$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
-				} elseif ($librarySectionType == "movie") {
-					$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
-				} elseif ($librarySectionType == "artist") {
-					$AvailableAt = '';
-				} elseif ($librarySectionType == "photo") {
-					$AvailableAt = '';
-				}
-				
-				if($event <> "media.stop") {
-					$this->SetValue('AvailableAt',$AvailableAt);
-				} else {
-					$this->SetValue('AvailableAt','');
-				}	
-
-				#################################################################				
-				// Altersbeschränkung
-				if($librarySectionType == "show") {
-					$contentRating = @$metadata->contentRating;
-				} elseif ($librarySectionType == "movie") {
-					$contentRating = @$metadata->contentRating;
-				} elseif ($librarySectionType == "artist") {
-					$contentRating = '';
-				} elseif ($librarySectionType == "photo") {
-					$contentRating = '';
-				}
-				
-				if($event <> "media.stop") {
-					$this->SetValue('contentRating',$contentRating);
-				} else {
-					$this->SetValue('contentRating', '');
-				}
-
-				#################################################################				
-				// Mediathekname und MediathekId
-				if($event <> "media.stop") {
-					// Mediathekname und MediathekId
-					$this->SetValue('MediaLibraryName',$metadata->librarySectionTitle);
-					$this->SetValue('MediaLibraryId',$metadata->librarySectionID);									
-				} else {					
-					// Mediathekname und MediathekId
-					$this->SetValue('MediaLibraryName','');
-					$this->SetValue('MediaLibraryId','');
-				}
-
-				// Array fuer Message
-				if(!empty($metadata->librarySectionTitle) || $metadata->librarySectionTitle !== NULL) {
-					$arrayMessage['PLEX_MediaLibraryName'] = $metadata->librarySectionTitle;
-				} else {
-					$arrayMessage['PLEX_MediaLibraryName'] = '';
-				}
-
-				#################################################################				
-				// Zusammenfassung
-				if($event <> "media.stop") {				
-					$this->SetValue('summary',$metadata->summary);					
-				} else {					
-					$this->SetValue('summary','');
-				}
-
-				#################################################################
-				// Studio
-				if($librarySectionType == "show") {
-					$studio = '';
-				} elseif ($librarySectionType == "movie") {
-					$studio = @$metadata->studio;
-				} elseif ($librarySectionType == "artist") {
-					$studio = '';
-				} elseif ($librarySectionType == "photo") {
-					$studio = '';
-				}
-				
-				if($event <> "media.stop") {
-					$this->SetValue('studio',$studio);
-				} else {
-					$this->SetValue('studio','');
-				}
-
-				#################################################################
-				// Cover
-				if($librarySectionType == "show") {
-					$cover = @$metadata->grandparentThumb;
-				} elseif ($librarySectionType == "movie") {
-					$cover = @$metadata->thumb;
-				} elseif ($librarySectionType == "artist") {
-					$cover = @$metadata->grandparentThumb;
-				} elseif ($librarySectionType == "photo") {
-					$cover = '';
-				}
-
-				// Wenn Metadaten nicht vorhanden
-				if(empty($cover))
-					$cover = '';		
-
-				// Array fuer Message
-				if(!empty($cover) || $cover !== NULL) {
-					$arrayMessage['PLEX_Cover'] = $cover;
-				} else {
-					$arrayMessage['PLEX_Cover'] = '';
-				}
-
-				if($event <> "media.stop") {
-					$this->SetValue('cover',$cover);
-					$this->CreateMediaObject ($this->GetIDForIdent('cover'), 'Cover', $cover, $event, $Fanart=0);
-				} else {
-					$this->SetValue('cover','');
-					$this->CreateMediaObject ($this->GetIDForIdent('cover'), 'Cover', $cover, $event, $Fanart=0);
-				}
-				
-				#################################################################
-				// Cover Serie				
-				if($librarySectionType == "show") {
-					$coverSeasonAlbum = @$metadata->parentThumb;
-				} elseif ($librarySectionType == "movie") {
-					$coverSeasonAlbum = @$metadata->parentThumb;				
-				} elseif ($librarySectionType == "artist") {
-					$coverSeasonAlbum = @$metadata->parentThumb;				
-				} elseif ($librarySectionType == "photo") {
-					$coverSeasonAlbum = '';
-				}
-				
-				// Wenn Metadaten nicht vorhanden
-				if(empty($coverSeasonAlbum))
-					$coverSeasonAlbum = '';			
-
-				// Array fuer Message
-				if(!empty($coverSeasonAlbum) || $coverSeasonAlbum !== NULL) {
-					$arrayMessage['PLEX_CoverSeasonAlbum'] = $coverSeasonAlbum;
-				} else {
-					$arrayMessage['PLEX_CoverSeasonAlbum'] = '';
-				}
-
-				if($event <> "media.stop") {
-					$this->SetValue('coverSeasonAlbum',$coverSeasonAlbum);
-					$this->CreateMediaObject ($this->GetIDForIdent('coverSeasonAlbum'), 'SeasonAlbum', $coverSeasonAlbum, $event, $Fanart=0);
-				} else {
-					$this->SetValue('coverSeasonAlbum','');
-					$this->CreateMediaObject ($this->GetIDForIdent('coverSeasonAlbum'), 'SeasonAlbum', $coverSeasonAlbum, $event, $Fanart=0);
-				}
-				
-				#################################################################
-				// Fanart
-				if($librarySectionType == "show") {
-					$coverFanart = @$metadata->art;
-				} elseif ($librarySectionType == "movie") {
-					$coverFanart = @$metadata->art;
-				} elseif ($librarySectionType == "artist") {
-					$coverFanart = '';
-				} elseif ($librarySectionType == "photo") {
-					$coverFanart = '';
-				}
-
-				// Wenn Metadaten nicht vorhanden
-				if(empty($coverFanart))
-					$coverFanart = '';		
-				
-				if($event <> "media.stop") {
-					$this->SetValue('coverFanart',$coverFanart);
-					$this->CreateMediaObject ($this->GetIDForIdent('coverFanart'), 'Fanart', $coverFanart, $event, $Fanart=1);
-				} else {
-					$this->SetValue('coverFanart','');
-					$this->CreateMediaObject ($this->GetIDForIdent('coverFanart'), 'Fanart', $coverFanart, $event, $Fanart=1);
-				}
-				
-				#################################################################
-				// Movie Format
-				if($librarySectionType == "show") {
-					$movieFormat = @$PlayerSteamData->movieFormat;
-				} elseif ($librarySectionType == "movie") {
-					$movieFormat = @$PlayerSteamData->movieFormat;
-				} elseif ($librarySectionType == "artist") {
-					$movieFormat = '';
-				} elseif ($librarySectionType == "photo") {
-					$movieFormat = '';
-				}
-
-				// Wenn Metadaten nicht vorhanden
-				if(empty($movieFormat))
-					$movieFormat = '';
-				
-				// Array fuer Message
-				if(!empty($movieFormat) || $movieFormat !== NULL) {
-					$arrayMessage['PLEX_MovieFormat'] = $movieFormat;
-				} else {
-					$arrayMessage['PLEX_MovieFormat'] = '';
-				}
+				// Player uebereinstimmung
+				if($playerUUID === $this->ReadPropertyString('playerUUID')) {
+					// ZusatzInfos laden
+					$ArraySessionData = $this->getPlexPlayerSessionData ($playerUUID);
+					$PlayerSteamData  = json_decode(json_encode($ArraySessionData));
 					
-				if($event <> "media.stop") {
-					$this->SetValue('movieFormat',$movieFormat);
-				} else {
-					$this->SetValue('movieFormat','');
-				}
+					// Array fuer Message
+					$arrayMessage['PLEX_Player'] = IPS_GetName($this->InstanceID);
+					$arrayMessage['PLEX_LibrarySectionType'] = $librarySectionType;
 
-				#################################################################
-				// Sound Format
-				if($librarySectionType == "show") {
-					$soundFormat = @$PlayerSteamData->soundFormat;
-				} elseif ($librarySectionType == "movie") {
-					$soundFormat = @$PlayerSteamData->soundFormat;
-				} elseif ($librarySectionType == "artist") {
-					$soundFormat = @$PlayerSteamData->soundFormat;
-				} elseif ($librarySectionType == "photo") {
-					$soundFormat = '';
-				}
+					#################################################################
+					// Event
+					if($event === "media.play") {
+						$this->SetValue('event',0);
+					} elseif($event === "media.pause") {
+						$this->SetValue('event',1);
+					} elseif($event === "media.resume") {
+						$this->SetValue('event',2);
+					} elseif($event === "media.scrobble") {
+						$this->SetValue('event',3);
+					} elseif($event === "media.stop") {
+						$this->SetValue('event',4);
+					} elseif($event === "media.rate") {
+						$this->SetValue('event',5);
+					} 
 
-				// Wenn Metadaten nicht vorhanden
-				if(empty($soundFormat))
-					$soundFormat = '';
-				
-				if($event <> "media.stop") {
-					$this->SetValue('soundFormat',$soundFormat);
-				} else {
-					$this->SetValue('soundFormat','');
-				}
+					// Array fuer Message
+					$arrayMessage['PLEX_Event'] = $event;
 
-				// Array fuer Message
-				if(!empty($soundFormat) || $soundFormat !== NULL) {
-					$arrayMessage['PLEX_SoundFormat'] = $soundFormat;
-				} else {
-					$arrayMessage['PLEX_SoundFormat'] = '';
-				}
-
-				#################################################################
-				// Aspect Ratio
-				if($librarySectionType == "show") {
-					$aspectRatio = @$PlayerSteamData->aspectRatio;
-				} elseif ($librarySectionType == "movie") {
-					$aspectRatio = @$PlayerSteamData->aspectRatio;
-				} elseif ($librarySectionType == "artist") {
-					$aspectRatio = '';
-				} elseif ($librarySectionType == "photo") {
-					$aspectRatio = '';
-				}
-
-				// Wenn Metadaten nicht vorhanden
-				if(empty($aspectRatio))
-					$aspectRatio = '';
-				
-				if($event <> "media.stop") {
-					$this->SetValue('aspectRatio',$aspectRatio);
-				} else {
-					$this->SetValue('aspectRatio','');
-				}
-
-				#################################################################
-				// Duration
-				if($librarySectionType == "show") {					
-					$returnInt = $this->intervall(@$PlayerSteamData->duration);
-					$duration = $returnInt['hms_name'];
-				} elseif ($librarySectionType == "movie") {
-					$returnInt = $this->intervall(@$PlayerSteamData->duration);
-					$duration = $returnInt['hms_name'];
-				} elseif ($librarySectionType == "artist") {
-					$returnInt = $this->intervall(@$PlayerSteamData->duration);
-					$duration = $returnInt['hms_name'];
-				} elseif ($librarySectionType == "photo") {
-					$duration = '';
-				}
-
-				// Wenn Metadaten nicht vorhanden
-				if(empty($duration))
-					$duration = '';
-				
-				// Array fuer Message
-				if(!empty($duration) || $duration !== NULL) {
-					$arrayMessage['PLEX_Duration'] = $duration;
-				} else {
-					$arrayMessage['PLEX_Duration'] = '';
-				}
-
-				if($event <> "media.stop") {
-					$this->SetValue('duration',$duration);
-				} else {
-					$this->SetValue('duration','');
-				}
-
-				#################################################################
-				// SeasonEpisode
-				if($librarySectionType == "show") {					
-					$seasonEpisode = @$PlayerSteamData->SeasonEpisode;					
-				
+					#################################################################
+					// Titel
+					if($librarySectionType == "show") {
+						$title = @$metadata->grandparentTitle;
+					} elseif ($librarySectionType == "movie") {
+						$title = @$metadata->title;
+					} elseif ($librarySectionType == "artist") {
+						$title = @$metadata->grandparentTitle;
+					} elseif ($librarySectionType == "photo") {
+						$title = @$metadata->parentTitle;
+					}
+					
 					if($event <> "media.stop") {
-						$this->SetValue('seasonEpisode',$seasonEpisode);
+						$this->SetValue('title',$title);
+					} else {
+						$this->SetValue('title','');
+					}				
+
+					// Array fuer Message
+					if(!empty($title) || $title !== NULL) {
+						$arrayMessage['PLEX_Title'] = $title;
+					} else {
+						$arrayMessage['PLEX_Title'] = '';
+					}
+
+					#################################################################
+					// Titel Staffel/Album
+					if($librarySectionType == "show") {
+						$titleSeasonAlbum = @$metadata->parentTitle;
+					} elseif ($librarySectionType == "movie") {
+						$titleSeasonAlbum = '';
+					} elseif ($librarySectionType == "artist") {
+						$titleSeasonAlbum = @$metadata->parentTitle;
+					} elseif ($librarySectionType == "photo") {
+						$titleSeasonAlbum = '';
+					}
+
+					if($event <> "media.stop") {
+						$this->SetValue('titleSeasonAlbum',$titleSeasonAlbum);
+					} else {
+						$this->SetValue('titleSeasonAlbum','');
+					}			
+
+					// Array fuer Message
+					if(!empty($titleSeasonAlbum) || $titleSeasonAlbum !== NULL) {
+						$arrayMessage['PLEX_SeasonAlbum'] = $titleSeasonAlbum;
+					} else {
+						$arrayMessage['PLEX_SeasonAlbum'] = '';
+					}
+					
+					#################################################################
+					// Titel Episode/Musik
+					if($librarySectionType == "show") {
+						$titleEpisodeMusic = @$metadata->title;
+					} elseif ($librarySectionType == "movie") {
+						$titleEpisodeMusic = '';
+					} elseif ($librarySectionType == "artist") {
+						$titleEpisodeMusic = @$metadata->title;
+					} elseif ($librarySectionType == "photo") {
+						$titleEpisodeMusic = '';
+					}
+					
+					if($event <> "media.stop") {
+						$this->SetValue('titleEpisodeMusic',$titleEpisodeMusic);
+					} else {
+						$this->SetValue('titleEpisodeMusic','');
+					}
+
+					// Array fuer Message
+					if(!empty($titleEpisodeMusic) || $titleEpisodeMusic !== NULL) {
+						$arrayMessage['PLEX_TitleEpisodeMusic'] = $titleEpisodeMusic;
+					} else {
+						$arrayMessage['PLEX_TitleEpisodeMusic'] = '';
+					}
+
+					#################################################################
+					// Veröffentlichungs-Datum				
+					if($librarySectionType == "show") {
+						$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
+					} elseif ($librarySectionType == "movie") {
+						$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
+					} elseif ($librarySectionType == "artist") {
+						$AvailableAt = '';
+					} elseif ($librarySectionType == "photo") {
+						$AvailableAt = '';
+					}
+					
+					if($event <> "media.stop") {
+						$this->SetValue('AvailableAt',$AvailableAt);
+					} else {
+						$this->SetValue('AvailableAt','');
+					}	
+
+					#################################################################				
+					// Altersbeschränkung
+					if($librarySectionType == "show") {
+						$contentRating = @$metadata->contentRating;
+					} elseif ($librarySectionType == "movie") {
+						$contentRating = @$metadata->contentRating;
+					} elseif ($librarySectionType == "artist") {
+						$contentRating = '';
+					} elseif ($librarySectionType == "photo") {
+						$contentRating = '';
+					}
+					
+					if($event <> "media.stop") {
+						$this->SetValue('contentRating',$contentRating);
+					} else {
+						$this->SetValue('contentRating', '');
+					}
+
+					#################################################################				
+					// Mediathekname und MediathekId
+					if($event <> "media.stop") {
+						// Mediathekname und MediathekId
+						$this->SetValue('MediaLibraryName',$metadata->librarySectionTitle);
+						$this->SetValue('MediaLibraryId',$metadata->librarySectionID);									
+					} else {					
+						// Mediathekname und MediathekId
+						$this->SetValue('MediaLibraryName','');
+						$this->SetValue('MediaLibraryId','');
+					}
+
+					// Array fuer Message
+					if(!empty($metadata->librarySectionTitle) || $metadata->librarySectionTitle !== NULL) {
+						$arrayMessage['PLEX_MediaLibraryName'] = $metadata->librarySectionTitle;
+					} else {
+						$arrayMessage['PLEX_MediaLibraryName'] = '';
+					}
+
+					#################################################################				
+					// Zusammenfassung
+					if($event <> "media.stop") {				
+						$this->SetValue('summary',$metadata->summary);					
+					} else {					
+						$this->SetValue('summary','');
+					}
+
+					#################################################################
+					// Studio
+					if($librarySectionType == "show") {
+						$studio = '';
+					} elseif ($librarySectionType == "movie") {
+						$studio = @$metadata->studio;
+					} elseif ($librarySectionType == "artist") {
+						$studio = '';
+					} elseif ($librarySectionType == "photo") {
+						$studio = '';
+					}
+					
+					if($event <> "media.stop") {
+						$this->SetValue('studio',$studio);
+					} else {
+						$this->SetValue('studio','');
+					}
+
+					#################################################################
+					// Cover
+					if($librarySectionType == "show") {
+						$cover = @$metadata->grandparentThumb;
+					} elseif ($librarySectionType == "movie") {
+						$cover = @$metadata->thumb;
+					} elseif ($librarySectionType == "artist") {
+						$cover = @$metadata->grandparentThumb;
+					} elseif ($librarySectionType == "photo") {
+						$cover = '';
+					}
+
+					// Wenn Metadaten nicht vorhanden
+					if(empty($cover))
+						$cover = '';		
+
+					// Array fuer Message
+					if(!empty($cover) || $cover !== NULL) {
+						$arrayMessage['PLEX_Cover'] = $cover;
+					} else {
+						$arrayMessage['PLEX_Cover'] = '';
+					}
+
+					if($event <> "media.stop") {
+						$this->SetValue('cover',$cover);
+						$this->CreateMediaObject ($this->GetIDForIdent('cover'), 'Cover', $cover, $event, $Fanart=0);
+					} else {
+						$this->SetValue('cover','');
+						$this->CreateMediaObject ($this->GetIDForIdent('cover'), 'Cover', $cover, $event, $Fanart=0);
+					}
+					
+					#################################################################
+					// Cover Serie				
+					if($librarySectionType == "show") {
+						$coverSeasonAlbum = @$metadata->parentThumb;
+					} elseif ($librarySectionType == "movie") {
+						$coverSeasonAlbum = @$metadata->parentThumb;				
+					} elseif ($librarySectionType == "artist") {
+						$coverSeasonAlbum = @$metadata->parentThumb;				
+					} elseif ($librarySectionType == "photo") {
+						$coverSeasonAlbum = '';
+					}
+					
+					// Wenn Metadaten nicht vorhanden
+					if(empty($coverSeasonAlbum))
+						$coverSeasonAlbum = '';			
+
+					// Array fuer Message
+					if(!empty($coverSeasonAlbum) || $coverSeasonAlbum !== NULL) {
+						$arrayMessage['PLEX_CoverSeasonAlbum'] = $coverSeasonAlbum;
+					} else {
+						$arrayMessage['PLEX_CoverSeasonAlbum'] = '';
+					}
+
+					if($event <> "media.stop") {
+						$this->SetValue('coverSeasonAlbum',$coverSeasonAlbum);
+						$this->CreateMediaObject ($this->GetIDForIdent('coverSeasonAlbum'), 'SeasonAlbum', $coverSeasonAlbum, $event, $Fanart=0);
+					} else {
+						$this->SetValue('coverSeasonAlbum','');
+						$this->CreateMediaObject ($this->GetIDForIdent('coverSeasonAlbum'), 'SeasonAlbum', $coverSeasonAlbum, $event, $Fanart=0);
+					}
+					
+					#################################################################
+					// Fanart
+					if($librarySectionType == "show") {
+						$coverFanart = @$metadata->art;
+					} elseif ($librarySectionType == "movie") {
+						$coverFanart = @$metadata->art;
+					} elseif ($librarySectionType == "artist") {
+						$coverFanart = '';
+					} elseif ($librarySectionType == "photo") {
+						$coverFanart = '';
+					}
+
+					// Wenn Metadaten nicht vorhanden
+					if(empty($coverFanart))
+						$coverFanart = '';		
+					
+					if($event <> "media.stop") {
+						$this->SetValue('coverFanart',$coverFanart);
+						$this->CreateMediaObject ($this->GetIDForIdent('coverFanart'), 'Fanart', $coverFanart, $event, $Fanart=1);
+					} else {
+						$this->SetValue('coverFanart','');
+						$this->CreateMediaObject ($this->GetIDForIdent('coverFanart'), 'Fanart', $coverFanart, $event, $Fanart=1);
+					}
+					
+					#################################################################
+					// Movie Format
+					if($librarySectionType == "show") {
+						$movieFormat = @$PlayerSteamData->movieFormat;
+					} elseif ($librarySectionType == "movie") {
+						$movieFormat = @$PlayerSteamData->movieFormat;
+					} elseif ($librarySectionType == "artist") {
+						$movieFormat = '';
+					} elseif ($librarySectionType == "photo") {
+						$movieFormat = '';
+					}
+
+					// Wenn Metadaten nicht vorhanden
+					if(empty($movieFormat))
+						$movieFormat = '';
+					
+					// Array fuer Message
+					if(!empty($movieFormat) || $movieFormat !== NULL) {
+						$arrayMessage['PLEX_MovieFormat'] = $movieFormat;
+					} else {
+						$arrayMessage['PLEX_MovieFormat'] = '';
+					}
+						
+					if($event <> "media.stop") {
+						$this->SetValue('movieFormat',$movieFormat);
+					} else {
+						$this->SetValue('movieFormat','');
+					}
+
+					#################################################################
+					// Sound Format
+					if($librarySectionType == "show") {
+						$soundFormat = @$PlayerSteamData->soundFormat;
+					} elseif ($librarySectionType == "movie") {
+						$soundFormat = @$PlayerSteamData->soundFormat;
+					} elseif ($librarySectionType == "artist") {
+						$soundFormat = @$PlayerSteamData->soundFormat;
+					} elseif ($librarySectionType == "photo") {
+						$soundFormat = '';
+					}
+
+					// Wenn Metadaten nicht vorhanden
+					if(empty($soundFormat))
+						$soundFormat = '';
+					
+					if($event <> "media.stop") {
+						$this->SetValue('soundFormat',$soundFormat);
+					} else {
+						$this->SetValue('soundFormat','');
+					}
+
+					// Array fuer Message
+					if(!empty($soundFormat) || $soundFormat !== NULL) {
+						$arrayMessage['PLEX_SoundFormat'] = $soundFormat;
+					} else {
+						$arrayMessage['PLEX_SoundFormat'] = '';
+					}
+
+					#################################################################
+					// Aspect Ratio
+					if($librarySectionType == "show") {
+						$aspectRatio = @$PlayerSteamData->aspectRatio;
+					} elseif ($librarySectionType == "movie") {
+						$aspectRatio = @$PlayerSteamData->aspectRatio;
+					} elseif ($librarySectionType == "artist") {
+						$aspectRatio = '';
+					} elseif ($librarySectionType == "photo") {
+						$aspectRatio = '';
+					}
+
+					// Wenn Metadaten nicht vorhanden
+					if(empty($aspectRatio))
+						$aspectRatio = '';
+					
+					if($event <> "media.stop") {
+						$this->SetValue('aspectRatio',$aspectRatio);
+					} else {
+						$this->SetValue('aspectRatio','');
+					}
+
+					#################################################################
+					// Duration
+					if($librarySectionType == "show") {					
+						$returnInt = $this->intervall(@$PlayerSteamData->duration);
+						$duration = $returnInt['hms_name'];
+					} elseif ($librarySectionType == "movie") {
+						$returnInt = $this->intervall(@$PlayerSteamData->duration);
+						$duration = $returnInt['hms_name'];
+					} elseif ($librarySectionType == "artist") {
+						$returnInt = $this->intervall(@$PlayerSteamData->duration);
+						$duration = $returnInt['hms_name'];
+					} elseif ($librarySectionType == "photo") {
+						$duration = '';
+					}
+
+					// Wenn Metadaten nicht vorhanden
+					if(empty($duration))
+						$duration = '';
+					
+					// Array fuer Message
+					if(!empty($duration) || $duration !== NULL) {
+						$arrayMessage['PLEX_Duration'] = $duration;
+					} else {
+						$arrayMessage['PLEX_Duration'] = '';
+					}
+
+					if($event <> "media.stop") {
+						$this->SetValue('duration',$duration);
+					} else {
+						$this->SetValue('duration','');
+					}
+
+					#################################################################
+					// SeasonEpisode
+					if($librarySectionType == "show") {					
+						$seasonEpisode = @$PlayerSteamData->SeasonEpisode;					
+					
+						if($event <> "media.stop") {
+							$this->SetValue('seasonEpisode',$seasonEpisode);
+						} else {
+							$this->SetValue('seasonEpisode','');
+						}
+
+						// Array fuer Message					
+						if(!empty($seasonEpisode) || $seasonEpisode !== NULL) {
+							$arrayMessage['PLEX_SeasonEpisode'] = $seasonEpisode;
+						} else {
+							$arrayMessage['PLEX_SeasonEpisode'] = '';
+						}
+
 					} else {
 						$this->SetValue('seasonEpisode','');
 					}
 
-					// Array fuer Message					
-					if(!empty($seasonEpisode) || $seasonEpisode !== NULL) {
-						$arrayMessage['PLEX_SeasonEpisode'] = $seasonEpisode;
-					} else {
-						$arrayMessage['PLEX_SeasonEpisode'] = '';
-					}
-
-				} else {
-					$this->SetValue('seasonEpisode','');
-				}
-
-				#################################################################
-				// Roles
-				if ($librarySectionType == "movie") {
-					$roleinfo = @$metadata->Role;
-					$roleTable = $this->RoleFillTable ($roleinfo);
-					
-					if($event <> "media.stop") {
-						$this->SetValue('role',$roleTable);
+					#################################################################
+					// Roles
+					if ($librarySectionType == "movie") {
+						$roleinfo = @$metadata->Role;
+						$roleTable = $this->RoleFillTable ($roleinfo);
+						
+						if($event <> "media.stop") {
+							$this->SetValue('role',$roleTable);
+						} else {
+							$this->SetValue('role','');
+						}							
 					} else {
 						$this->SetValue('role','');
-					}							
-				} else {
-					$this->SetValue('role','');
-				}
-				
-				#################################################################
-				// Director
-				$comma_separated = '';
-				if ($librarySectionType == "movie") {
-					$directorinfo = @$metadata->Director;
-					if(is_countable($directorinfo)) {
-						foreach($directorinfo as $key => $director) {
-							$array_directorinfo[] = $director->tag;
-						}
-						$comma_separated = implode(", ", $array_directorinfo);
+					}
 					
-					}
-				} 
-				
-				if($event <> "media.stop") {
-					$this->SetValue('director',$comma_separated);
-				} else {
-					$this->SetValue('director','');
-				}
-
-				#################################################################
-				// Producer
-				$comma_separated = '';
-				if ($librarySectionType == "movie") {
-					$producerinfo = @$metadata->Producer;
-					if(is_countable($producerinfo)) {
-						foreach($producerinfo as $key => $producer) {
-							$array_producer[] = $producer->tag;
-						}
-						$comma_separated = implode(", ", $array_producer);
-					}
-				} 
-				
-				if($event <> "media.stop") {
-					$this->SetValue('producer',$comma_separated);
-				} else {
-					$this->SetValue('producer','');
-				}				
-				
-				#################################################################
-				// Writer
-				$comma_separated = '';
-				if ($librarySectionType == "movie") {
-					$writerinfo = @$metadata->Writer;
-					if(is_countable($writerinfo)) {
-						foreach($writerinfo as $key => $writer) {
-							$array_writer[] = $writer->tag;
-						}
-						$comma_separated = implode(", ", $array_writer);
-					}
-				} 
-				
-				if($event <> "media.stop") {
-					$this->SetValue('writer',$comma_separated);
-				} else {
-					$this->SetValue('writer','');
-				}	
-
-				#################################################################
-				// year
-				if($librarySectionType == "show") {					
-					$year = @$metadata->year;
-				} elseif ($librarySectionType == "movie") {
-					$year = @$metadata->year;
-				} elseif ($librarySectionType == "artist") {
-					$year = '';
-				} elseif ($librarySectionType == "photo") {
-					$year = '';
-				}
-				
-				if($event <> "media.stop") {
-					$this->SetValue('year',$year);
-				} else {
-					$this->SetValue('year','');
-				}
-
-				#################################################################
-				// Bewertung
-				if($event <> "media.stop") {
-					if(!empty($metadata->ratingImage)) {
-						$ratingImage = $metadata->ratingImage;
-						$ratingImage_host = substr($ratingImage,0,strpos($ratingImage,":"));						
+					#################################################################
+					// Director
+					$comma_separated = '';
+					if ($librarySectionType == "movie") {
+						$directorinfo = @$metadata->Director;
+						if(is_countable($directorinfo)) {
+							foreach($directorinfo as $key => $director) {
+								$array_directorinfo[] = $director->tag;
+							}
+							$comma_separated = implode(", ", $array_directorinfo);
 						
-						if($ratingImage_host=="rottentomatoes") {
-							$ratingImage_pic  = substr($ratingImage,strripos($ratingImage,".")+1,10);
-							$this->SetValue('rating',strval($metadata->rating * 10).' %');
-							$this->SetValue('ratingImage',$ratingImage_host."_".$ratingImage_pic);
-						} else {							
+						}
+					} 
+					
+					if($event <> "media.stop") {
+						$this->SetValue('director',$comma_separated);
+					} else {
+						$this->SetValue('director','');
+					}
+
+					#################################################################
+					// Producer
+					$comma_separated = '';
+					if ($librarySectionType == "movie") {
+						$producerinfo = @$metadata->Producer;
+						if(is_countable($producerinfo)) {
+							foreach($producerinfo as $key => $producer) {
+								$array_producer[] = $producer->tag;
+							}
+							$comma_separated = implode(", ", $array_producer);
+						}
+					} 
+					
+					if($event <> "media.stop") {
+						$this->SetValue('producer',$comma_separated);
+					} else {
+						$this->SetValue('producer','');
+					}				
+					
+					#################################################################
+					// Writer
+					$comma_separated = '';
+					if ($librarySectionType == "movie") {
+						$writerinfo = @$metadata->Writer;
+						if(is_countable($writerinfo)) {
+							foreach($writerinfo as $key => $writer) {
+								$array_writer[] = $writer->tag;
+							}
+							$comma_separated = implode(", ", $array_writer);
+						}
+					} 
+					
+					if($event <> "media.stop") {
+						$this->SetValue('writer',$comma_separated);
+					} else {
+						$this->SetValue('writer','');
+					}	
+
+					#################################################################
+					// year
+					if($librarySectionType == "show") {					
+						$year = @$metadata->year;
+					} elseif ($librarySectionType == "movie") {
+						$year = @$metadata->year;
+					} elseif ($librarySectionType == "artist") {
+						$year = '';
+					} elseif ($librarySectionType == "photo") {
+						$year = '';
+					}
+					
+					if($event <> "media.stop") {
+						$this->SetValue('year',$year);
+					} else {
+						$this->SetValue('year','');
+					}
+
+					#################################################################
+					// Bewertung
+					if($event <> "media.stop") {
+						if(!empty($metadata->ratingImage)) {
+							$ratingImage = $metadata->ratingImage;
+							$ratingImage_host = substr($ratingImage,0,strpos($ratingImage,":"));						
+							
+							if($ratingImage_host=="rottentomatoes") {
+								$ratingImage_pic  = substr($ratingImage,strripos($ratingImage,".")+1,10);
+								$this->SetValue('rating',strval($metadata->rating * 10).' %');
+								$this->SetValue('ratingImage',$ratingImage_host."_".$ratingImage_pic);
+							} else {							
+								$this->SetValue('rating','');
+								$this->SetValue('ratingImage','');
+							}					
+						} else {
 							$this->SetValue('rating','');
 							$this->SetValue('ratingImage','');
-						}					
+						}
+						if(!empty($metadata->audienceRatingImage)) {					
+						$audienceRatingImage = $metadata->audienceRatingImage;
+						$audienceRatingImage_host = substr($audienceRatingImage,0,strpos($audienceRatingImage,":"));
+						
+							if($audienceRatingImage_host=="rottentomatoes") {
+								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
+								$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
+								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
+							} elseif($audienceRatingImage_host=="imdb") {
+								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
+								$this->SetValue('audienceRating',strval($metadata->audienceRating));
+								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
+							}											
+						} else {
+							$this->SetValue('audienceRating','');
+							$this->SetValue('audienceRatingImage','');
+						}
 					} else {
 						$this->SetValue('rating','');
 						$this->SetValue('ratingImage','');
-					}
-					if(!empty($metadata->audienceRatingImage)) {					
-					$audienceRatingImage = $metadata->audienceRatingImage;
-					$audienceRatingImage_host = substr($audienceRatingImage,0,strpos($audienceRatingImage,":"));
-					
-						if($audienceRatingImage_host=="rottentomatoes") {
-							$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
-							$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
-							$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
-						} elseif($audienceRatingImage_host=="imdb") {
-							$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
-							$this->SetValue('audienceRating',strval($metadata->audienceRating));
-							$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
-						}											
-					} else {
 						$this->SetValue('audienceRating','');
 						$this->SetValue('audienceRatingImage','');
 					}
-				} else {
-					$this->SetValue('rating','');
-					$this->SetValue('ratingImage','');
-					$this->SetValue('audienceRating','');
-					$this->SetValue('audienceRatingImage','');
+
+					#################################################################
+					// Daten-Plex übergeben
+					$ServerIpPort			= $this->ReadAttributeString('PlexIpAdress').':'.$this->ReadAttributeString('PlexPort');
+					$ServerToken			= $this->ReadAttributeString('PlexToken');	
+					$PlexUrl					= $this->ReadAttributeString('PlexExtUrl');	
+
+					// Array fuer Message
+					$arrayMessage['PLEX_IpPort'] = $ServerIpPort;
+					$arrayMessage['PLEX_Token']  = $ServerToken;
+					$arrayMessage['PLEX_ExtUrl'] = $PlexUrl;
+
+					// Message Senden wenn Script hinterlegt
+					if($this->ReadPropertyBoolean('OwnScriptAktive') === true) {				
+						#if($event == "media.play") {
+							$this->SendMessage($arrayMessage);
+						#}
+
+					}
+					
+					#################################################################
+					// Html Overview
+					$this->GenerateHtmlOverview ();
 				}
-
-				#################################################################
-				// Daten-Plex übergeben
-				$ServerIpPort			= $this->ReadAttributeString('PlexIpAdress').':'.$this->ReadAttributeString('PlexPort');
-				$ServerToken			= $this->ReadAttributeString('PlexToken');	
-				$PlexUrl					= $this->ReadAttributeString('PlexExtUrl');	
-
-				// Array fuer Message
-				$arrayMessage['PLEX_IpPort'] = $ServerIpPort;
-				$arrayMessage['PLEX_Token']  = $ServerToken;
-				$arrayMessage['PLEX_ExtUrl'] = $PlexUrl;
-
-				// Message Senden wenn Script hinterlegt
-				if($this->ReadPropertyBoolean('OwnScriptAktive') === true) {				
-					#if($event == "media.play") {
-						$this->SendMessage($arrayMessage);
-					#}
-
-				}
-				
-				#################################################################
-				// Html Overview
-				$this->GenerateHtmlOverview ();
-
 			}
 		}
 
