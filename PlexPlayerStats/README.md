@@ -65,9 +65,9 @@ Bewertungsbild              | String    | Bewertungsbild Rotten oder Imdb
 Publikumsbewertung          | String    | Bewertung Rotten oder Imdb
 Publikumsbewertungbild      | String    | Bewertungsbild Rotten oder Imdb
 Altersfreigabe              | String    | Altersfreigabe
-Cover                       | String    | Cover Film / Serie (wird gecached)
-Cover Staffel/Album         | String    | Cover Staffel / Album (wird gecached)
-Fanart                      | String    | Fanart Cover (wird gecached)
+Cover                       | String    | Cover Film / Serie (Bild wird gecached) | wenn gestoppt wird ein Ersatz-Cover hinterlegt
+Cover Staffel/Album         | String    | Cover Staffel / Album (Bild wird gecached) | wenn gestoppt wird ein Ersatz-Cover hinterlegt
+Fanart                      | String    | Fanart Cover (Bild wird gecached) | wenn gestoppt wird ein Ersatz-Cover hinterlegt
 Video-Format                | String    | Videoformat
 Ton-Format                  | String    | Tonformat
 Bildseitenverhältnis        | String    | Seitenverhältnis
