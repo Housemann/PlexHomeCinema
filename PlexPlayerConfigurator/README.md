@@ -1,5 +1,5 @@
 # PlexPlayerConfigurator
-Beschreibung des Moduls.
+Mit dem Modul können laufende Plex Sessions ausgelesen werden, die man dann als Player in IP-Symcon erstellen kann.
 
 ### Inhaltsverzeichnis
 
@@ -13,16 +13,20 @@ Beschreibung des Moduls.
 
 ### 1. Funktionsumfang
 
-*
+* Plex Sessions auslesen und diese dann als Player in IP-Symcon erstellen zu lassen. Damit man sehen kann was auf den einzelnen Playern gerade läuft. Die Plyer werden nur im Konfigurator aufgeführt, wenn aktiv in Plex ein Film/Serie etc. abgespielt wird.
 
 ### 2. Vorraussetzungen
 
 - IP-Symcon ab Version 5.5
+- Plex Server mit angelegtem Webhook
+- Modul PlexRecieveWebhookData (wird bei anlage vom ersten Player automatisch hinzugefügt und muss nur konfiguriert werden)
+- Modul PlexSplitter (wird bei anlage vom ersten Player automatisch hinzugefügt und muss nicht konfiguriert werden)
 
 ### 3. Software-Installation
 
-* Über den Module Store das 'PlexPlayerConfigurator'-Modul installieren.
-* Alternativ über das Module Control folgende URL hinzufügen
+* Über das Module Control folgende URL hinzufügen `https://github.com/Housemann/PlexHomeCinema`
+* Webhook in Plex anlegen
+* Im Modul PlexRecieveWebhookData User und Password vom in Plex hinterlegten Webhook hinzufügen
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
@@ -31,37 +35,11 @@ Beschreibung des Moduls.
 
 __Konfigurationsseite__:
 
-Name     | Beschreibung
--------- | ------------------
-         |
-         |
-
-### 5. Statusvariablen und Profile
-
-Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
-
-#### Statusvariablen
-
-Name   | Typ     | Beschreibung
------- | ------- | ------------
-       |         |
-       |         |
-
-#### Profile
-
-Name   | Typ
------- | -------
-       |
-       |
-
-### 6. WebFront
-
-Die Funktionalität, die das Modul im WebFront bietet.
-
-### 7. PHP-Befehlsreferenz
-
-`boolean PLEX_BeispielFunktion(integer $InstanzID);`
-Erklärung der Funktion.
-
-Beispiel:
-`PLEX_BeispielFunktion(12345);`
+Name                 | Beschreibung
+-------------------- | ------------------
+Plex IP-Adresse      | Ip vom Plex Server
+Plex Port            | Port vom Plex Server
+Plex Token           | Token vom Plex Server (nur benötigt wenn unter Einstellungen->Netzwerk->"Liste der IP-Adressen und Netzwerke, die keine Authentifizierung benötigen" nicht euer Netzwerk (z.B. 192.168.11.0/24) hinterlegt ist)
+Plex Externe URL     | Eine eigene URL über die ihr euren Plex Server erreicht. Dient für die Anzeige der Bilder in der HTML Box von Extern in IP-Symcon
+IP-Symcon IP-Adresse | IP Symcon IP zur Abfrage von hinerlegten Bildern
+IP-Symcon Port       | IP Symcon Port
