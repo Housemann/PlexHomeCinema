@@ -1,5 +1,5 @@
 # PlexRecieveWebhookData
-Beschreibung des Moduls.
+Das I/O Modul empfängt die Daten des WebHooks die vom Plex-Server kommen und leitet diese an den Splitter weiter.
 
 ### Inhaltsverzeichnis
 
@@ -7,22 +7,20 @@ Beschreibung des Moduls.
 2. [Voraussetzungen](#2-voraussetzungen)
 3. [Software-Installation](#3-software-installation)
 4. [Einrichten der Instanzen in IP-Symcon](#4-einrichten-der-instanzen-in-ip-symcon)
-5. [Statusvariablen und Profile](#5-statusvariablen-und-profile)
-6. [WebFront](#6-webfront)
-7. [PHP-Befehlsreferenz](#7-php-befehlsreferenz)
 
 ### 1. Funktionsumfang
 
-*
+* Datenempfang vom Plex-Server und weitergabe an den Plex-Splitter
 
 ### 2. Vorraussetzungen
 
 - IP-Symcon ab Version 5.5
+- Plex-Server mit Webhook
 
 ### 3. Software-Installation
 
-* Über den Module Store das 'PlexRecieveWebhookData'-Modul installieren.
-* Alternativ über das Module Control folgende URL hinzufügen
+* Über das Module Control folgende URL hinzufügen `https://github.com/Housemann/PlexHomeCinema`
+* Plex Webhook hinterlegen (Kontoeinstellungen->Webhooks->Webhook hinzufügen->Webhook Adresse (http://user:pass@IP-AdresseIpSymcon:PortIpSymcon/hook/plex))
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
@@ -33,35 +31,5 @@ __Konfigurationsseite__:
 
 Name     | Beschreibung
 -------- | ------------------
-         |
-         |
-
-### 5. Statusvariablen und Profile
-
-Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
-
-#### Statusvariablen
-
-Name   | Typ     | Beschreibung
------- | ------- | ------------
-       |         |
-       |         |
-
-#### Profile
-
-Name   | Typ
------- | -------
-       |
-       |
-
-### 6. WebFront
-
-Die Funktionalität, die das Modul im WebFront bietet.
-
-### 7. PHP-Befehlsreferenz
-
-`boolean PLEX_BeispielFunktion(integer $InstanzID);`
-Erklärung der Funktion.
-
-Beispiel:
-`PLEX_BeispielFunktion(12345);`
+Username | Benutzername aus dem Webhook
+Password | Passwort aus dem Webhook
