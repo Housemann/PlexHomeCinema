@@ -13,14 +13,14 @@ Mit dem Modul können laufende Plex Sessions ausgelesen werden, die man dann als
 
 ### 1. Funktionsumfang
 
-* Plex Sessions auslesen und diese dann als Player in IP-Symcon erstellen zu lassen. Damit man sehen kann was auf den einzelnen Playern gerade läuft. Die Plyer werden nur im Konfigurator aufgeführt, wenn aktiv in Plex ein Film/Serie etc. abgespielt wird.
+* Plex Sessions auslesen um diese dann als Player in IP-Symcon erstellen zu lassen. Damit man sehen kann, was auf den einzelnen Playern gerade läuft mit einigen Details zum Inhalt. Die Player werden nur im Konfigurator aufgeführt, wenn aktiv in Plex ein Film/Serie etc. abgespielt wird.
 
 ### 2. Vorraussetzungen
 
 - IP-Symcon ab Version 5.5
 - Plex Server mit angelegtem Webhook
-- Modul PlexRecieveWebhookData (wird bei anlage vom ersten Player automatisch hinzugefügt und muss nur konfiguriert werden)
-- Modul PlexSplitter (wird bei anlage vom ersten Player automatisch hinzugefügt und muss nicht konfiguriert werden)
+- Modul PlexRecieveWebhookData (wird bei Anlage vom ersten Player automatisch hinzugefügt und muss nur konfiguriert werden)
+- Modul PlexSplitter (wird bei Anlage vom ersten Player automatisch hinzugefügt und muss NICHT konfiguriert werden)
 
 ### 3. Software-Installation
 
@@ -36,7 +36,7 @@ Mit dem Modul können laufende Plex Sessions ausgelesen werden, die man dann als
 __Konfigurationsseite__:
 
 Name                 | Beschreibung
--------------------- | ------------------
+-------------------- | ------------------------------------------------------------------------------------------------------------------
 Plex IP-Adresse      | Ip vom Plex Server
 Plex Port            | Port vom Plex Server
 Plex Token           | Token vom Plex Server (nur benötigt wenn unter Einstellungen->Netzwerk->"Liste der IP-Adressen und Netzwerke, die keine Authentifizierung benötigen" nicht euer Netzwerk (z.B. 192.168.11.0/24) hinterlegt ist)
