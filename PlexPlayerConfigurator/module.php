@@ -1,8 +1,12 @@
 <?php
 
 declare(strict_types=1);
+	require_once __DIR__ . '/../libs/helper_variables.php';
+
 	class PlexPlayerConfigurator extends IPSModule
 	{
+		use PLEX_HelperVariables;
+
 		public function Create()
 		{
 			//Never delete this line!
@@ -13,6 +17,9 @@ declare(strict_types=1);
 			$this->RegisterPropertyString('Port', '');
 			$this->RegisterPropertyString('Token', '');
 			$this->RegisterPropertyString('PlexUrl', '');
+
+			// Attributes
+			$this->RegisterAttributeInteger('rc',0);
 
 			// IP-Symcon IP und Port
 			$this->RegisterPropertyString('IpsIpAddress','');
@@ -29,6 +36,16 @@ declare(strict_types=1);
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
+
+			$plexIp			= $this->ReadPropertyString('IPAddress');
+			$plexPort		= $this->ReadPropertyString('Port');
+			$plexToken	= $this->ReadPropertyString('Token');
+
+			$rc = $this->CheckIpAdressPortStatus($plexIp, intval($plexPort));
+			$this->WriteAttributeInteger('rc',$rc['ErrorCode']);
+			
+			if($rc['ErrorCode']<0)
+				echo $rc['ErrorMsg'];
 		}
 	
 		public function GetConfigurationForm()
@@ -37,40 +54,42 @@ declare(strict_types=1);
 
 			$plexIp			= $this->ReadPropertyString('IPAddress');
 			$plexPort		= $this->ReadPropertyString('Port');
-			$plexToken	= $this->ReadPropertyString('Token');
+			$plexToken	= $this->ReadPropertyString('Token');			
 
 			if(!empty($plexIp)) {
 				$Players = $this->plexPlayer($plexIp, $plexPort, $plexToken);
 				$Values = [];
 
-				if(count($Players)>0) {
-					for($i=0; $i < count($Players); $i++) {
-						$instanceID = $this->getPlayer($Players[$i]['create']['playerUUID']);
-						$AddValue = [
-							'player'      		=> $Players[$i]['create']['player'],
-							'playerUUID'      => $Players[$i]['create']['playerUUID'],
-							'playerPlatform'  => $Players[$i]['create']['playerPlatform'],
-							'ipAddress'       => $Players[$i]['create']['ipAddress'],
-							'remoteIpAddress' => $Players[$i]['create']['remoteIpAddress'],
-							'instanceID'      => $instanceID
-						];
-						
-						$moduleID = '{DF440146-0E00-8B37-3A28-71D56C0A3CFC}';
-						$AddValue['create'] = [
-							[
-									'moduleID'      => $moduleID,
-									'configuration' => [
-											'playerUUID'  		=> $Players[$i]['create']['playerUUID'],
-											'player'  				=> $Players[$i]['create']['player'],
-											'playerPlatform' 	=> $Players[$i]['create']['playerPlatform']
-									]
-							]
-						];
-						$Values[] = $AddValue;
+				if(is_countable($Players)) {
+					if(count($Players)>0) {
+						for($i=0; $i < count($Players); $i++) {
+							$instanceID = $this->getPlayer($Players[$i]['create']['playerUUID']);
+							$AddValue = [
+								'player'      		=> $Players[$i]['create']['player'],
+								'playerUUID'      => $Players[$i]['create']['playerUUID'],
+								'playerPlatform'  => $Players[$i]['create']['playerPlatform'],
+								'ipAddress'       => $Players[$i]['create']['ipAddress'],
+								'remoteIpAddress' => $Players[$i]['create']['remoteIpAddress'],
+								'instanceID'      => $instanceID
+							];
+							
+							$moduleID = '{DF440146-0E00-8B37-3A28-71D56C0A3CFC}';
+							$AddValue['create'] = [
+								[
+										'moduleID'      => $moduleID,
+										'configuration' => [
+												'playerUUID'  		=> $Players[$i]['create']['playerUUID'],
+												'player'  				=> $Players[$i]['create']['player'],
+												'playerPlatform' 	=> $Players[$i]['create']['playerPlatform']
+										]
+								]
+							];
+							$Values[] = $AddValue;
+						}
+						$data['actions'][0]['values'] = $Values;
 					}
-					$data['actions'][0]['values'] = $Values;
 				}
-			}        
+			}
 			return json_encode($data);
 		}
 
@@ -122,86 +141,89 @@ declare(strict_types=1);
 			$homepage = @simplexml_load_file($url);	
 			$array_xml = json_decode(json_encode($homepage),true);		
 		
-			// List Count Players
-			$count_player = $array_xml['@attributes']['size'];
-		
-			$AddAllPlayer = array();
-		
-			// List Players
-			if(array_key_exists('Video', $array_xml)) {
-				if(!array_key_exists('0', $array_xml['Video'])) {
-					$Player['create'] = [
-						"player"      		=> $array_xml['Video']['Player']['@attributes']['product'],
-						"playerUUID"      => $array_xml['Video']['Player']['@attributes']['machineIdentifier'],
-						"playerPlatform"  => $array_xml['Video']['Player']['@attributes']['platform'],
-						"ipAddress"       => $array_xml['Video']['Player']['@attributes']['address'],
-						"remoteIpAddress" => $array_xml['Video']['Player']['@attributes']['remotePublicAddress']
-					];
-					$AddAllPlayer[] = $Player;
-		
-				} else {
-					for($i=0;$i<$count_player;$i++) {
+			if(is_countable($array_xml)) {
+
+				// List Count Players
+				$count_player = $array_xml['@attributes']['size'];
+			
+				$AddAllPlayer = array();
+			
+				// List Players
+				if(array_key_exists('Video', $array_xml)) {
+					if(!array_key_exists('0', $array_xml['Video'])) {
 						$Player['create'] = [
-							"player"      		=> $array_xml['Video'][$i]['Player']['@attributes']['product'],
-							"playerUUID"      => $array_xml['Video'][$i]['Player']['@attributes']['machineIdentifier'],
-							"playerPlatform"  => $array_xml['Video'][$i]['Player']['@attributes']['platform'],
-							"ipAddress"       => $array_xml['Video'][$i]['Player']['@attributes']['address'],
-							"remoteIpAddress" => $array_xml['Video'][$i]['Player']['@attributes']['remotePublicAddress']
+							"player"      		=> $array_xml['Video']['Player']['@attributes']['product'],
+							"playerUUID"      => $array_xml['Video']['Player']['@attributes']['machineIdentifier'],
+							"playerPlatform"  => $array_xml['Video']['Player']['@attributes']['platform'],
+							"ipAddress"       => $array_xml['Video']['Player']['@attributes']['address'],
+							"remoteIpAddress" => $array_xml['Video']['Player']['@attributes']['remotePublicAddress']
 						];
 						$AddAllPlayer[] = $Player;
-		
+			
+					} else {
+						for($i=0;$i<$count_player;$i++) {
+							$Player['create'] = [
+								"player"      		=> $array_xml['Video'][$i]['Player']['@attributes']['product'],
+								"playerUUID"      => $array_xml['Video'][$i]['Player']['@attributes']['machineIdentifier'],
+								"playerPlatform"  => $array_xml['Video'][$i]['Player']['@attributes']['platform'],
+								"ipAddress"       => $array_xml['Video'][$i]['Player']['@attributes']['address'],
+								"remoteIpAddress" => $array_xml['Video'][$i]['Player']['@attributes']['remotePublicAddress']
+							];
+							$AddAllPlayer[] = $Player;
+			
+						}
 					}
-				}
-			} 
-			if(array_key_exists('Track', $array_xml)) {
-				if(!array_key_exists('0', $array_xml['Track'])) {
-					$Player['create'] = [
-						"player" 		  	  => $array_xml['Track']['Player']['@attributes']['product'],
-						"playerUUID"      => $array_xml['Track']['Player']['@attributes']['machineIdentifier'],
-						"playerPlatform"  => $array_xml['Track']['Player']['@attributes']['platform'],
-						"ipAddress"       => $array_xml['Track']['Player']['@attributes']['address'],
-						"remoteIpAddress" => $array_xml['Track']['Player']['@attributes']['remotePublicAddress']
-					];
-					$AddAllPlayer[] = $Player;
-		
-				} else {
-					for($i=0;$i<$count_player;$i++) {
+				} 
+				if(array_key_exists('Track', $array_xml)) {
+					if(!array_key_exists('0', $array_xml['Track'])) {
 						$Player['create'] = [
-							"player" 			    => $array_xml['Track'][$i]['Player']['@attributes']['product'],
-							"playerUUID"      => $array_xml['Track'][$i]['Player']['@attributes']['machineIdentifier'],
-							"playerPlatform"  => $array_xml['Track'][$i]['Player']['@attributes']['platform'],
-							"ipAddress"       => $array_xml['Track'][$i]['Player']['@attributes']['address'],
-							"remoteIpAddress" => $array_xml['Track'][$i]['Player']['@attributes']['remotePublicAddress']
+							"player" 		  	  => $array_xml['Track']['Player']['@attributes']['product'],
+							"playerUUID"      => $array_xml['Track']['Player']['@attributes']['machineIdentifier'],
+							"playerPlatform"  => $array_xml['Track']['Player']['@attributes']['platform'],
+							"ipAddress"       => $array_xml['Track']['Player']['@attributes']['address'],
+							"remoteIpAddress" => $array_xml['Track']['Player']['@attributes']['remotePublicAddress']
 						];
 						$AddAllPlayer[] = $Player;
+			
+					} else {
+						for($i=0;$i<$count_player;$i++) {
+							$Player['create'] = [
+								"player" 			    => $array_xml['Track'][$i]['Player']['@attributes']['product'],
+								"playerUUID"      => $array_xml['Track'][$i]['Player']['@attributes']['machineIdentifier'],
+								"playerPlatform"  => $array_xml['Track'][$i]['Player']['@attributes']['platform'],
+								"ipAddress"       => $array_xml['Track'][$i]['Player']['@attributes']['address'],
+								"remoteIpAddress" => $array_xml['Track'][$i]['Player']['@attributes']['remotePublicAddress']
+							];
+							$AddAllPlayer[] = $Player;
+						}
 					}
 				}
+				if(array_key_exists('Photo', $array_xml)) {
+					if(!array_key_exists('0', $array_xml['Photo'])) {
+						$Player['create'] = [
+							"player"     			=> $array_xml['Photo']['Player']['@attributes']['product'],
+							"playerUUID"      => $array_xml['Photo']['Player']['@attributes']['machineIdentifier'],
+							"playerPlatform"  => $array_xml['Photo']['Player']['@attributes']['platform'],
+							"ipAddress"       => $array_xml['Photo']['Player']['@attributes']['address'],
+							"remoteIpAddress" => $array_xml['Photo']['Player']['@attributes']['remotePublicAddress']
+						];
+						$AddAllPlayer[] = $Player;
+			
+					} else {
+						for($i=0;$i<$count_player;$i++) {
+							$Player['create'] = [
+								"player" 			    => $array_xml['Photo'][$i]['Player']['@attributes']['product'],
+								"playerUUID"      => $array_xml['Photo'][$i]['Player']['@attributes']['machineIdentifier'],
+								"playerPlatform"  => $array_xml['Photo'][$i]['Player']['@attributes']['platform'],
+								"ipAddress"       => $array_xml['Photo'][$i]['Player']['@attributes']['address'],
+								"remoteIpAddress" => $array_xml['Photo'][$i]['Player']['@attributes']['remotePublicAddress']
+							];
+							$AddAllPlayer[] = $Player;
+						}
+					}
+				} 
+				return $AddAllPlayer;
 			}
-			if(array_key_exists('Photo', $array_xml)) {
-				if(!array_key_exists('0', $array_xml['Photo'])) {
-					$Player['create'] = [
-						"player"     			=> $array_xml['Photo']['Player']['@attributes']['product'],
-						"playerUUID"      => $array_xml['Photo']['Player']['@attributes']['machineIdentifier'],
-						"playerPlatform"  => $array_xml['Photo']['Player']['@attributes']['platform'],
-						"ipAddress"       => $array_xml['Photo']['Player']['@attributes']['address'],
-						"remoteIpAddress" => $array_xml['Photo']['Player']['@attributes']['remotePublicAddress']
-					];
-					$AddAllPlayer[] = $Player;
-		
-				} else {
-					for($i=0;$i<$count_player;$i++) {
-						$Player['create'] = [
-							"player" 			    => $array_xml['Photo'][$i]['Player']['@attributes']['product'],
-							"playerUUID"      => $array_xml['Photo'][$i]['Player']['@attributes']['machineIdentifier'],
-							"playerPlatform"  => $array_xml['Photo'][$i]['Player']['@attributes']['platform'],
-							"ipAddress"       => $array_xml['Photo'][$i]['Player']['@attributes']['address'],
-							"remoteIpAddress" => $array_xml['Photo'][$i]['Player']['@attributes']['remotePublicAddress']
-						];
-						$AddAllPlayer[] = $Player;
-					}
-				}
-			} 
-			return $AddAllPlayer;
 		}	
 	
 	

@@ -27,6 +27,9 @@ Das I/O Modul empfängt die Daten des WebHooks die vom Plex-Server kommen und le
  Unter 'Instanz hinzufügen' kann das 'PlexRecieveWebhookData'-Modul mithilfe des Schnellfilters gefunden werden.  
 	- Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
 
+Überischt Konfigurator
+![config1](img/config1.png?raw=true)
+
 __Konfigurationsseite__:
 
 Name     | Beschreibung
