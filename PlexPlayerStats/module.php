@@ -46,57 +46,59 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			));
 			$this->Variable_Register('event', 'Event', 'PLEX.Event', '', 1, false, 0);
 			$this->SetValue('event',4);
+			// User
+			$this->Variable_Register('user', $this->translate('User'), '', '', 3, false,3);
 			// Titel
-			$this->Variable_Register('title', $this->translate('Title'), '', '', 3, false, 1);
+			$this->Variable_Register('title', $this->translate('Title'), '', '', 3, false, 6);
 			// Titel Staffel/Album
-			$this->Variable_Register('titleSeasonAlbum', $this->translate('Season / Album'), '', '', 3, false, 2);
+			$this->Variable_Register('titleSeasonAlbum', $this->translate('Season / Album'), '', '', 3, false, 9);
 			// Titel Episode/Musik
-			$this->Variable_Register('titleEpisodeMusic', $this->translate('Episode / Music'), '', '', 3, false, 3);
+			$this->Variable_Register('titleEpisodeMusic', $this->translate('Episode / Music'), '', '', 3, false, 12);
 			// Mediathekname und MediathekId
-			$this->Variable_Register('MediaLibraryName', $this->translate('Media library Name'), '', '', 3, false, 4);
-			$this->Variable_Register('MediaLibraryId', $this->translate('Media library ID'), '', '', 3, false, 5);
+			$this->Variable_Register('MediaLibraryName', $this->translate('Media library Name'), '', '', 3, false, 15);
+			$this->Variable_Register('MediaLibraryId', $this->translate('Media library ID'), '', '', 3, false, 18);
 			// Studio
-			$this->Variable_Register('studio', $this->translate('Studio'), '', '', 3, false, 6);
+			$this->Variable_Register('studio', $this->translate('Studio'), '', '', 3, false, 21);
 			// Veröffentlichungs-Datum
-			$this->Variable_Register('AvailableAt', $this->translate('Available At'), '', '', 3, false, 7);
+			$this->Variable_Register('AvailableAt', $this->translate('Available At'), '', '', 3, false, 24);
 			// Zusammenfassung
-			$this->Variable_Register('summary', $this->translate('Summary'), '~HTMLBox', '', 3, false, 8);
+			$this->Variable_Register('summary', $this->translate('Summary'), '~HTMLBox', '', 3, false, 27);
 			// Bewertung			
-			$this->Variable_Register('rating', $this->translate('Rating'), '', '', 3, false, 9);
-			$this->Variable_Register('audienceRating', $this->translate('Audience Rating'), '', '', 3, false, 9);
+			$this->Variable_Register('rating', $this->translate('Rating'), '', '', 3, false, 30);
+			$this->Variable_Register('audienceRating', $this->translate('Audience Rating'), '', '', 3, false, 33);
 			// Rating and AudienceRating
-			$this->Variable_Register('ratingImage', $this->translate('Rating Image'), '', '', 3, false, 9);
-			$this->Variable_Register('audienceRatingImage', $this->translate('Audience Rating Image'), '', '', 3, false, 9);			
+			$this->Variable_Register('ratingImage', $this->translate('Rating Image'), '', '', 3, false, 36);
+			$this->Variable_Register('audienceRatingImage', $this->translate('Audience Rating Image'), '', '', 3, false, 39);			
 			// Altersbeschränkung
-			$this->Variable_Register('contentRating', $this->translate('Content Rating'), '', '', 3, false, 10);
+			$this->Variable_Register('contentRating', $this->translate('Content Rating'), '', '', 3, false, 41);
 			// Cover
-			$this->Variable_Register('cover', $this->translate('Cover'), '', '', 3, false, 11);
+			$this->Variable_Register('cover', $this->translate('Cover'), '', '', 3, false, 44);
 			// Cover Serie
-			$this->Variable_Register('coverSeasonAlbum', $this->translate('Cover Season / Album'), '', '', 3, false, 12);
+			$this->Variable_Register('coverSeasonAlbum', $this->translate('Cover Season / Album'), '', '', 3, false, 47);
 			// Fanart
-			$this->Variable_Register('coverFanart', $this->translate('Fanart'), '', '', 3, false, 13);
+			$this->Variable_Register('coverFanart', $this->translate('Fanart'), '', '', 3, false, 50);
 			// Movie Format
-			$this->Variable_Register('movieFormat', $this->translate('Movie Format'), '', '', 3, false, 14);
+			$this->Variable_Register('movieFormat', $this->translate('Movie Format'), '', '', 3, false, 53);
 			// Sound Format
-			$this->Variable_Register('soundFormat', $this->translate('Sound Format'), '', '', 3, false, 15);
+			$this->Variable_Register('soundFormat', $this->translate('Sound Format'), '', '', 3, false, 56);
 			// Aspect Ratio
-			$this->Variable_Register('aspectRatio', $this->translate('Aspect Ratio'), '', '', 3, false, 16);
+			$this->Variable_Register('aspectRatio', $this->translate('Aspect Ratio'), '', '', 3, false, 59);
 			// Total Duration
-			$this->Variable_Register('duration', $this->translate('Total Duration'), '', '', 3, false, 18);
+			$this->Variable_Register('duration', $this->translate('Total Duration'), '', '', 3, false, 62);
 			// Director
-			$this->Variable_Register('director', $this->translate('Director'), '', '', 3, false, 20);
+			$this->Variable_Register('director', $this->translate('Director'), '', '', 3, false, 65);
 			// Producer
-			$this->Variable_Register('producer', $this->translate('Producer'), '', '', 3, false, 21);
+			$this->Variable_Register('producer', $this->translate('Producer'), '', '', 3, false, 68);
 			// Writer
-			$this->Variable_Register('writer', $this->translate('Writer'), '', '', 3, false, 22);	
+			$this->Variable_Register('writer', $this->translate('Writer'), '', '', 3, false, 71);	
 			// SeasonEpisode
-			$this->Variable_Register('seasonEpisode', $this->translate('Season Episode'), '', '', 3, false, 23);
+			$this->Variable_Register('seasonEpisode', $this->translate('Season Episode'), '', '', 3, false, 74);
 			// Year
-			$this->Variable_Register('year', $this->translate('Year'), '', '', 3, false, 24);
+			$this->Variable_Register('year', $this->translate('Year'), '', '', 3, false, 77);
 			// Role
-			$this->Variable_Register('role', $this->translate('Role'), '~HTMLBox', '', 3, false, 25);
+			$this->Variable_Register('role', $this->translate('Role'), '~HTMLBox', '', 3, false, 80);
 			// Overview
-			$this->Variable_Register('overview', $this->translate('Overview'), '~HTMLBox', '', 3, false, 50);
+			$this->Variable_Register('overview', $this->translate('Overview'), '~HTMLBox', '', 3, false, 83);
 		
 		}
 
@@ -188,6 +190,13 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					// Array fuer Message
 					$arrayMessage['PLEX_Event'] = $event;
 
+					#################################################################
+					// User
+					if($event <> "media.stop") {
+						$this->SetValue('user',@$data->Account->title);
+					} else {
+						$this->SetValue('user','');
+					}	
 					#################################################################
 					// Titel
 					if($librarySectionType == "show") {
