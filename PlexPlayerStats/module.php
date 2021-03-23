@@ -192,11 +192,15 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 					#################################################################
 					// User
+					$user = @$data->Account->title;			
 					if($event <> "media.stop") {
-						$this->SetValue('user',@$data->Account->title);
+						$this->SetValue('user',$user);
 					} else {
 						$this->SetValue('user','');
 					}	
+
+					// Array fuer Message
+					$arrayMessage['PLEX_User'] = $user;
 					#################################################################
 					// Titel
 					if($librarySectionType == "show") {
