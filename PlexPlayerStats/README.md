@@ -93,9 +93,8 @@ PLEX.Event    | Plex Event (Play, Pause, Stop, Resume)
 
 Man kann ein Script hinzufügen um sich eine Benachrichtigung senden zu lassen.
 
-Benachrichtigung 
-
 ![message1](img/message1.png?raw=true)
+
 
 Folgende Variablen werden ans Skript übergeben...
 
