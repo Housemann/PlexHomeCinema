@@ -10,7 +10,7 @@ declare(strict_types=1);
 			//Never delete this line!
 			parent::Create();
 
-			// WebHook generieren // http://housemann:Start1234@192.168.11.111:3777/hook/Plex?Test=1
+			// WebHook generieren // http://user:pass@192.168.11.111:3777/hook/Plex?Test=1
 			$this->RegisterHook('/hook/'.$this->hook);						
 
       // Propertys
