@@ -277,14 +277,19 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					}
 
 					#################################################################
-					// Veröffentlichungs-Datum				
-					if($librarySectionType == "show") {
-						$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
-					} elseif ($librarySectionType == "movie") {
-						$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
-					} elseif ($librarySectionType == "artist") {
-						$AvailableAt = '';
-					} elseif ($librarySectionType == "photo") {
+					// Veröffentlichungs-Datum
+					// prüfen wenn leer
+					if(!empty($metadata->originallyAvailableAt) || $metadata->originallyAvailableAt !== NULL) {
+						if($librarySectionType == "show") {
+							$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
+						} elseif ($librarySectionType == "movie") {
+							$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
+						} elseif ($librarySectionType == "artist") {
+							$AvailableAt = '';
+						} elseif ($librarySectionType == "photo") {
+							$AvailableAt = '';
+						}
+					} else {
 						$AvailableAt = '';
 					}
 					
