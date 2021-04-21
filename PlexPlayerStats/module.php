@@ -848,8 +848,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					// Nur werte vom selektierten Player ausgeben
 					if(array_key_exists($playerUUID,$arrayPlayerData))
 						return $arrayPlayerData[$playerUUID];
-
-						$this->SendDebug(__FUNCTION__, json_encode($arrayPlayerData[$playerUUID]), 0);
 				}
 			}
 		}
