@@ -51,6 +51,7 @@ declare(strict_types=1);
 		public function GetConfigurationForm()
 		{
 			$data = json_decode(file_get_contents(__DIR__ . "/form.json"),true);
+			$this->SendDebug(__FUNCTION__, json_encode($data), 0);
 
 			$plexIp			= $this->ReadPropertyString('IPAddress');
 			$plexPort		= $this->ReadPropertyString('Port');
@@ -58,6 +59,7 @@ declare(strict_types=1);
 
 			if(!empty($plexIp)) {
 				$Players = $this->plexPlayer($plexIp, $plexPort, $plexToken);
+				$this->SendDebug(__FUNCTION__, json_encode($Players), 0);
 				$Values = [];
 
 				if(is_countable($Players)) {
@@ -91,6 +93,7 @@ declare(strict_types=1);
 				}
 			}
 			return json_encode($data);
+			$this->SendDebug(__FUNCTION__, json_encode($data), 0);
 		}
 
 		private function getCreatedPlayers()
@@ -109,6 +112,7 @@ declare(strict_types=1);
 				];
 			}
 			return $player;
+			$this->SendDebug(__FUNCTION__, json_encode($player), 0);
 		}
 
 		private function getPlayer(string $playerUUID) 
@@ -223,6 +227,7 @@ declare(strict_types=1);
 					}
 				} 
 				return $AddAllPlayer;
+				$this->SendDebug(__FUNCTION__, json_encode($AddAllPlayer), 0);
 			}
 		}	
 	

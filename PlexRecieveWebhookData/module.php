@@ -34,11 +34,13 @@ declare(strict_types=1);
 		public function ForwardData($JSONString)
 		{
 			$data = json_decode($JSONString);
-			IPS_LogMessage('IO FRWD', utf8_decode($data->Buffer));
+			$this->SendDebug(__FUNCTION__, json_encode(utf8_decode($data->Buffer)), 0);
+			#IPS_LogMessage('IO FRWD', utf8_decode($data->Buffer));
 		}
 
 		public function Send(string $Text)
 		{
+			$this->SendDebug(__FUNCTION__, json_encode($Text), 0);
 			$this->SendDataToChildren(json_encode(['DataID' => '{9CB87C13-D56D-3118-B827-BBF1B254FD33}', 'Buffer' => $Text]));
 		}
 
@@ -62,6 +64,7 @@ declare(strict_types=1);
 
 				$this->SendDebug('DataWebHook', print_r($_POST["payload"], true), 0);
 				$this->Send($_POST["payload"]);
+				$this->SendDebug(__FUNCTION__, json_encode($_POST["payload"]), 0);
 			}
 		}
 
