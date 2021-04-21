@@ -122,7 +122,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		public function ReceiveData($JSONString)
 		{
 			$data = json_decode($JSONString);
-			IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
+			#IPS_LogMessage('Device RECV', utf8_decode($data->Buffer));
+			$this->SendDebug(__FUNCTION__, json_encode(utf8_decode($data->Buffer)), 0);
 
 			// Plex Server Daten aus Configurator holen
 			$InstanceIDConf = IPS_GetInstanceListByModuleID('{01D944DE-8835-F81F-9A3A-DA544E2BB9A1}')[0];
@@ -142,6 +143,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		private function ReadAndProcessData($data) 
 		{			
 			$data = json_decode(utf8_encode($data));
+			$this->SendDebug(__FUNCTION__, json_encode($data), 0);
 			
 			// Pruefung ob Objekt librarySectionType existiert (z.B. wenn Live DVR geschaut wird.)
 			$rc = 0;
@@ -846,6 +848,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					// Nur werte vom selektierten Player ausgeben
 					if(array_key_exists($playerUUID,$arrayPlayerData))
 						return $arrayPlayerData[$playerUUID];
+
+						$this->SendDebug(__FUNCTION__, json_encode($arrayPlayerData[$playerUUID]), 0);
 				}
 			}
 		}
@@ -855,7 +859,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ServerIPAddress 	= $this->ReadAttributeString('PlexIpAdress');
 			$ServerPort 			= $this->ReadAttributeString('PlexPort');
 			$ServerToken			= $this->ReadAttributeString('PlexToken');
-			#$PlexUrl					= $this->ReadAttributeString('PlexExtUrl');	
+			#$PlexUrl					= $this->ReadAttributeString('PlexExtUrl');
 
 			// Plex URL
 			if(!empty($ServerToken)) {
@@ -1173,7 +1177,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		{
 			if ($this->ReadPropertyBoolean('OwnScriptAktive') === true) {
 				$SkriptID = $this->ReadPropertyInteger('OwnScriptID');
-				IPS_LogMessage("PlexModule",json_encode($dataAR));
+				#IPS_LogMessage("PlexModule",json_encode($dataAR));
+				$this->SendDebug(__FUNCTION__, json_encode($dataAR), 0);
 				if (($SkriptID > 0) && (@IPS_ScriptExists($SkriptID) === true)) {					
 					IPS_RunScriptEx($SkriptID,$dataAR);
 				}
