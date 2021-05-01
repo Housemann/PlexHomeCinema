@@ -696,7 +696,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 						}
 						if(!empty($metadata->audienceRatingImage)) {					
 						$audienceRatingImage = $metadata->audienceRatingImage;
-						$audienceRatingImage_host = substr($audienceRatingImage,0,strpos($audienceRatingImage,":"));
+						$audienceRatingImage_host = substr($audienceRatingImage,0,strpos($audienceRatingImage,":"));						
 						
 							if($audienceRatingImage_host=="rottentomatoes") {
 								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
@@ -706,7 +706,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
 								$this->SetValue('audienceRating',strval($metadata->audienceRating));
 								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
-							}											
+							} elseif($audienceRatingImage_host=="themoviedb") {
+								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
+								$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
+								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
+							}
 						} else {
 							$this->SetValue('audienceRating','');
 							$this->SetValue('audienceRatingImage','');
@@ -873,7 +877,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Copy Files
 				$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/PlexPlayerStats/img/';
 				$DestPath   = IPS_GetKernelDir().'webfront/user/PlexCover/';
-				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png,FSK_0.png,FSK_6.png,FSK_12.png,FSK_16.png,FSK_18.png';
+				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png,FSK_0.png,FSK_6.png,FSK_12.png,FSK_16.png,FSK_18.png,themoviedb_rating.png';
 
 				foreach(explode(",",$files) as $file) {
 				  if (!copy($TargetPath.$file, $DestPath.$file)) {
@@ -1015,7 +1019,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ratingImage 					= $this->GetValue('ratingImage');
 			$audienceRating 			= $this->GetValue('audienceRating');
 			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');
-
 			
 			// Connect Dienst und URL auslesen
 			$connectControlId = @IPS_GetInstanceListByModuleID ("{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}")[0];
@@ -1030,7 +1033,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			// Cover laden
 			$MyRatingUrl 					= $Url.'/user/PlexCover/'.$ratingImage.'.png';
 			$MyaudienceRatingUrl 	= $Url.'/user/PlexCover/'.$audienceRatingImage.'.png';
-			
+
 			// Rating bauen
 			$MyRating 						= '<img src='.$MyRatingUrl." width=\"40\" hight=\"40\">";
 			$MyaudienceRating 		= '<img src='.$MyaudienceRatingUrl." width=\"40\" hight=\"40\">";
@@ -1133,7 +1136,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 						} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,4) == "imdb") {
 							// Rating == false und Audience Rating == true && IMDB
 							$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";
+						} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,10) == "themoviedb") {
+							// Rating == false und Audience Rating == true && THEMOVIEDB
+							$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";							
 						}
+
 						$s = $s . "</td>";
 						$s = $s . "</tr>";
 						

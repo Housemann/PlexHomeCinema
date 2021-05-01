@@ -13,7 +13,7 @@ declare(strict_types=1);
 			parent::Create();
 
 			// Propertys
-			$this->RegisterPropertyString('IPAddress','');
+			$this->RegisterPropertyString('IPAddress','127.0.0.1');
 			$this->RegisterPropertyString('Port', '');
 			$this->RegisterPropertyString('Token', '');
 			$this->RegisterPropertyString('PlexUrl', '');
