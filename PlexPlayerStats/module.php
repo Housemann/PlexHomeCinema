@@ -697,7 +697,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 						if(!empty($metadata->audienceRatingImage)) {					
 						$audienceRatingImage = $metadata->audienceRatingImage;
 						$audienceRatingImage_host = substr($audienceRatingImage,0,strpos($audienceRatingImage,":"));						
-						
+						$this->SendDebug(__FUNCTION__, "audienceRatingImage: ".$audienceRatingImage, 0);
+						$this->SendDebug(__FUNCTION__, "audienceRatingImage_host: ".$audienceRatingImage_host, 0);
+
 							if($audienceRatingImage_host=="rottentomatoes") {
 								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
 								$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
@@ -1032,7 +1034,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			
 			// Cover laden
 			$MyRatingUrl 					= $Url.'/user/PlexCover/'.$ratingImage.'.png';
-			$MyaudienceRatingUrl 	= $Url.'/user/PlexCover/'.$audienceRatingImage.'.png';
+			$MyaudienceRatingUrl 	= $Url.'/user/PlexCover/'.$audienceRatingImage.'.png';			
 
 			// Rating bauen
 			$MyRating 						= '<img src='.$MyRatingUrl." width=\"40\" hight=\"40\">";
@@ -1174,6 +1176,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				} else {
 					$s = "";
 				}
+				$this->SendDebug(__FUNCTION__, $s, 0);
 				$this->SetValue('overview',$s);
 			}
 		}
