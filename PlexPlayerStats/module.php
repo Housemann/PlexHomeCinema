@@ -47,8 +47,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			#$this->RegisterAttributeString('IpsPort','');
 
 			// Timer anlegen
-			$TimerNameRand = rand(1,99);
-			$this->RegisterAttributeString('TimerNameRand',"TimerPlexRemain");
+			#$TimerNameRand = rand(1,99);
+			#$this->RegisterAttributeString('TimerNameRand',"TimerPlexRemain");
 			$this->RegisterTimer ("TimerPlexRemain", 0, 'PLEX_GetDuration($_IPS[\'TARGET\'],\'Timer\');');
 
 			#############################################################################################
@@ -217,11 +217,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 					#################################################################
 					// Timer zum Restlaufzeits Update
-					$TimerNameRand = $this->ReadAttributeString('TimerNameRand');
+					#$TimerNameRand = $this->ReadAttributeString('TimerNameRand');
 					if($event <> "media.stop") {
-						$this->SetTimerInterval($TimerNameRand, $this->ReadPropertyInteger("refreshDurationTime") * 1000);					
+						$this->SetTimerInterval("TimerPlexRemain", $this->ReadPropertyInteger("refreshDurationTime") * 1000);					
 					} else {
-						$this->SetTimerInterval($TimerNameRand, 0);
+						$this->SetTimerInterval("TimerPlexRemain", 0);
 					}
 
 					#################################################################
