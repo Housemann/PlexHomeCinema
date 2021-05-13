@@ -18,6 +18,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->RegisterPropertyString('playerUUID', '');
 			$this->RegisterPropertyString('player', '');
 			$this->RegisterPropertyString('playerPlatform', '');
+			$this->RegisterPropertyInteger('refreshDurationTime', 60);
 			$this->RegisterPropertyInteger('OwnScriptID', 0);
 			$this->RegisterPropertyBoolean('OwnScriptAktive', false);
 
@@ -27,10 +28,16 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->RegisterAttributeString('PlexPort','');
 			$this->RegisterAttributeString('PlexToken','');
 			$this->RegisterAttributeString('PlexExtUrl','');
+			$this->RegisterAttributeString('durationPercent','');
 
 			// IP-Symcon IP und Port
 			$this->RegisterAttributeString('IpsIPAddress','');
 			$this->RegisterAttributeString('IpsPort','');
+
+			// Timer anlegen
+			$TimerNameRand = rand(1,99);
+			$this->RegisterAttributeString('TimerNameRand',"TimerPlexRemain".$TimerNameRand);
+			$this->RegisterTimer ("TimerPlexRemain".$TimerNameRand, 0, 'PLEX_GetDuration($_IPS[\'TARGET\'],\'Timer\');');
 
 			#############################################################################################
 			// Variablen und Profile anlegen
@@ -85,6 +92,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->Variable_Register('aspectRatio', $this->translate('Aspect Ratio'), '', '', 3, false, 59);
 			// Total Duration
 			$this->Variable_Register('duration', $this->translate('Total Duration'), '', '', 3, false, 62);
+			// Remaining Duration
+			$this->Variable_Register('remainingduration', $this->translate('Remaining Duration'), '', '', 3, false, 63);
 			// Director
 			$this->Variable_Register('director', $this->translate('Director'), '', '', 3, false, 65);
 			// Producer
@@ -99,7 +108,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$this->Variable_Register('role', $this->translate('Role'), '~HTMLBox', '', 3, false, 80);
 			// Overview
 			$this->Variable_Register('overview', $this->translate('Overview'), '~HTMLBox', '', 3, false, 83);
-		
+				
 		}
 
 		public function Destroy()
@@ -112,6 +121,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		{
 			//Never delete this line!
 			parent::ApplyChanges();
+
 		}
 
 		public function Send()
@@ -138,6 +148,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 			// Daten verarbeiten
 			$this->ReadAndProcessData(utf8_decode($data->Buffer));
+
 		}
 
 		private function ReadAndProcessData($data) 
@@ -191,6 +202,15 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 					// Array fuer Message
 					$arrayMessage['PLEX_Event'] = $event;
+
+					#################################################################
+					// Timer zum Restlaufzeits Update
+					$TimerNameRand = $this->ReadAttributeString('TimerNameRand');
+					if($event <> "media.stop") {
+						$this->SetTimerInterval($TimerNameRand, $this->ReadPropertyInteger("refreshDurationTime") * 1000);					
+					} else {
+						$this->SetTimerInterval($TimerNameRand, 0);
+					}
 
 					#################################################################
 					// User
@@ -281,11 +301,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					#################################################################
 					// Veröffentlichungs-Datum
 					// prüfen wenn leer
-					if(!empty($metadata->originallyAvailableAt) || $metadata->originallyAvailableAt !== NULL) {
+					if(!empty(@$metadata->originallyAvailableAt) || @$metadata->originallyAvailableAt !== NULL) {
 						if($librarySectionType == "show") {
-							$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
+							$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));							
 						} elseif ($librarySectionType == "movie") {
-							$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));
+							$AvailableAt = @date( "d.m.Y", strtotime($metadata->originallyAvailableAt));							
 						} elseif ($librarySectionType == "artist") {
 							$AvailableAt = '';
 						} elseif ($librarySectionType == "photo") {
@@ -323,8 +343,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					// Mediathekname und MediathekId
 					if($event <> "media.stop") {
 						// Mediathekname und MediathekId
-						$this->SetValue('MediaLibraryName',$metadata->librarySectionTitle);
-						$this->SetValue('MediaLibraryId',$metadata->librarySectionID);									
+						$this->SetValue('MediaLibraryName',@$metadata->librarySectionTitle);
+						$this->SetValue('MediaLibraryId',@$metadata->librarySectionID);									
 					} else {					
 						// Mediathekname und MediathekId
 						$this->SetValue('MediaLibraryName','');
@@ -332,7 +352,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					}
 
 					// Array fuer Message
-					if(!empty($metadata->librarySectionTitle) || $metadata->librarySectionTitle !== NULL) {
+					if(!empty(@$metadata->librarySectionTitle) || @$metadata->librarySectionTitle !== NULL) {
 						$arrayMessage['PLEX_MediaLibraryName'] = $metadata->librarySectionTitle;
 					} else {
 						$arrayMessage['PLEX_MediaLibraryName'] = '';
@@ -341,7 +361,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					#################################################################				
 					// Zusammenfassung
 					if($event <> "media.stop") {				
-						$this->SetValue('summary',$metadata->summary);					
+						$this->SetValue('summary',@$metadata->summary);					
 					} else {					
 						$this->SetValue('summary','');
 					}
@@ -563,6 +583,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					}
 
 					#################################################################
+					// Remaining duration
+					$this->GetDuration($event);
+
+					#################################################################
 					// SeasonEpisode
 					if($librarySectionType == "show") {					
 						$seasonEpisode = @$PlayerSteamData->SeasonEpisode;					
@@ -678,7 +702,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 					#################################################################
 					// Bewertung
 					if($event <> "media.stop") {
-						if(!empty($metadata->ratingImage)) {
+						if(!empty(@$metadata->ratingImage)) {
 							$ratingImage = $metadata->ratingImage;
 							$ratingImage_host = substr($ratingImage,0,strpos($ratingImage,":"));						
 							
@@ -751,6 +775,68 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 		}
 
 
+		public function GetDuration(string $event)
+		{
+			// Player aus Modul
+			$playerUUID = $this->ReadPropertyString('playerUUID');
+
+			// LibrarySectionType holen
+			$librarySectionType = $this->ReadAttributeString('librarySectionType');
+
+			// Plex Session Daten vom Player holen
+			$ArraySessionData = $this->getPlexPlayerSessionData ($playerUUID);
+			$PlayerSteamData  = json_decode(json_encode($ArraySessionData));
+
+			// Laufzeit und Gesamtlaufzeit holen
+			$duration 			= @$PlayerSteamData->duration;
+			$Runtime				= @$PlayerSteamData->runtime;
+			$RemainDuration = intval(ceil($duration-$Runtime));
+
+			if(!empty($duration)) {
+				$precent = intval(ceil(intval(ceil($Runtime))/intval(ceil($duration))*100));
+			} else {
+				$precent = 0;
+			}
+			
+				$this->WriteAttributeString("durationPercent",$precent);
+
+			// Remaining Duration
+			if($librarySectionType == "show") {					
+				$returnInt = $this->intervall($RemainDuration);
+				$remDuration = $returnInt['hms_name'];				
+			} elseif ($librarySectionType == "movie") {
+				$returnInt = $this->intervall($RemainDuration);
+				$remDuration = $returnInt['hms_name'];						
+			} elseif ($librarySectionType == "artist") {
+				$returnInt = $this->intervall($RemainDuration);
+				$remDuration = $returnInt['hms_name'];				
+			} elseif ($librarySectionType == "photo") {
+				$remDuration = '';
+			}
+
+			// Wenn Metadaten nicht vorhanden
+			if(empty($remDuration))
+				$remDuration = '';
+			
+			// Array fuer Message
+			if(!empty($remDuration) || $remDuration !== NULL) {
+				$arrayMessage['PLEX_RemainDuration'] = $remDuration;
+			} else {
+				$arrayMessage['PLEX_RemainDuration'] = '';
+			}
+
+			if($event <> "media.stop") {
+				$this->SetValue('remainingduration',$remDuration);
+				
+				// HTML Box aktualisieren
+				$this->GenerateHtmlOverview ();
+			} else {
+				$this->SetValue('remainingduration','');
+			}			
+
+		}
+
+
 		/*
 		// Not in Use
 		private function GetMetaDataFromKey (string $key) 
@@ -802,7 +888,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 									"movieFormat"      	=> @$data[$library][$i]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
 									"soundFormat"      	=> @$data[$library][$i]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
 									"aspectRatio"				=> @$data[$library][$i]['Media']['@attributes']['aspectRatio'],
-									"duration"					=> @$data[$library][$i]['@attributes']['duration'] / 1000
+									"duration"					=> @$data[$library][$i]['@attributes']['duration'] / 1000,
+									"runtime"						=> @$data[$library][$i]['@attributes']['viewOffset'] / 1000
 								];
 		
 								// Serie Episode zusammenbauen und ins Array Pushen
@@ -817,8 +904,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								];
 							} elseif ($library=='Track') {
 								$arrayPlayerData[$plexPlayer] = [
-									"soundFormat"    => @$data[$library][$i]['Media']['Part']['Stream']['@attributes']['displayTitle'],
-									"duration"			 => @$data[$library][$i]['@attributes']['duration'] / 1000
+									"soundFormat"    		=> @$data[$library][$i]['Media']['Part']['Stream']['@attributes']['displayTitle'],
+									"duration"			 		=> @$data[$library][$i]['@attributes']['duration'] / 1000,
+									"runtime"						=> @$data[$library][$i]['@attributes']['viewOffset'] / 1000
 								];
 							} 
 						}
@@ -831,7 +919,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								"movieFormat"      	=> @$data[$library]['Media']['Part']['Stream'][0]['@attributes']['displayTitle'],
 								"soundFormat"      	=> @$data[$library]['Media']['Part']['Stream'][1]['@attributes']['displayTitle'],
 								"aspectRatio"				=> @$data[$library]['Media']['@attributes']['aspectRatio'],
-								"duration"					=> @$data[$library]['@attributes']['duration'] / 1000
+								"duration"					=> @$data[$library]['@attributes']['duration'] / 1000,
+								"runtime"						=> @$data[$library]['@attributes']['viewOffset'] / 1000
 							];
 		
 							// Serie Episode zusammenbauen und ins Array Pushen
@@ -846,8 +935,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								];
 						} elseif ($library=='Track') {
 								$arrayPlayerData[$plexPlayer] = [
-									"soundFormat"    => @$data[$library]['Media']['Part']['Stream']['@attributes']['displayTitle'],
-									"duration"			 => @$data[$library]['@attributes']['duration'] / 1000
+									"soundFormat"    		=> @$data[$library]['Media']['Part']['Stream']['@attributes']['displayTitle'],
+									"duration"			 		=> @$data[$library]['@attributes']['duration'] / 1000,
+									"runtime"						=> @$data[$library]['@attributes']['viewOffset'] / 1000
 								];
 						} 
 					}
@@ -1021,6 +1111,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ratingImage 					= $this->GetValue('ratingImage');
 			$audienceRating 			= $this->GetValue('audienceRating');
 			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');
+
+			// Attribute auslesen
+			$durationPercent = $this->ReadAttributeString("durationPercent");
 			
 			// Connect Dienst und URL auslesen
 			$connectControlId = @IPS_GetInstanceListByModuleID ("{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}")[0];
@@ -1158,6 +1251,12 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 	        $s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Duration")."</td>";
 	        $s = $s . "<td style=\"text-align: right; height: 40px;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$duration."</td>";
 	        $s = $s . "</tr>";
+
+	        $s = $s . "<tr style=\"height: 40px;\">";
+	        $s = $s . "<td style=\"text-align: left; height: 40px;font-weight: bold;border-bottom: 1px solid white;font-size: 20px;\" colspan=\"2\">".$this->translate("Progress")."</td>";
+	        $s = $s . "<td style=\"text-align: right; height: 40px; width: 10px;border-bottom: 1px solid white;font-size: 16px; \" colspan=\"2\">";
+	        $s = $s . "<progress value=\"".$durationPercent."\" max=\"100\"></progress>"." ".$durationPercent." %"."</td>";
+					$s = $s . "</tr>";					
 
 					if($librarySectionType !== "artist") {
 		        $s = $s . "<tr style=\"height: 40px;\">";

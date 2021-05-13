@@ -20,6 +20,11 @@
             "name": "playerPlatform",
             "caption": "Player Platform"
         },
+        {
+            "type": "NumberSpinner",
+            "name": "refreshDurationTime",
+            "caption": "Refresh Durationtime (Seconds)"
+        },        
         { 
             "type": "Label", 
             "label": "_______________________________________________________________________________________________________________________________________________________" 

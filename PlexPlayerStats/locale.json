@@ -32,12 +32,15 @@
             "Show": "Serie",
             "Artist": "Musik",
             "Duration": "Laufzeit",
+            "Remaining Duration": "Rest Laufzeit",
             "Sound": "Ton",
             "IP-Symcon IP-Adress (Only if no Connect service)": "IP-Symcon IP-Adress (nur wenn kein Connect Dienst)",
             "IP-Symcon Port (Only if no Connect service)": "IP-Symcon Port (nur wenn kein Connect Dienst)",
             "Script": "Skript",
             "Custom script": "Eigenes Skript",
-            "User": "Benutzer"
+            "User": "Benutzer",
+            "Refresh Durationtime (Seconds)": "Aktualisierungszeit Restlaufzeit (Sekunden)",
+            "Progress": "Fortschritt"
         },
         "de_DE": {
             "Title":"Titel",
@@ -71,12 +74,15 @@
             "Show": "Serie",
             "Artist": "Musik",
             "Duration": "Laufzeit",
+            "Remaining Duration": "Rest Laufzeit",
             "Sound": "Ton",
             "IP-Symcon IP-Adress (Only if no Connect service)": "IP-Symcon IP-Adress (nur wenn kein Connect Dienst)",
             "IP-Symcon Port (Only if no Connect service)": "IP-Symcon Port (nur wenn kein Connect Dienst)",
             "Script": "Skript",
             "Custom script": "Eigenes Skript",
-            "User": "Benutzer"
+            "User": "Benutzer",
+            "Refresh Durationtime (Seconds)": "Aktualisierungszeit Restlaufzeit (Sekunden)",
+            "Progress": "Fortschritt"
         }
     }
 }

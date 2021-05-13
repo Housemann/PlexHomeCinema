@@ -133,11 +133,12 @@ $_IPS['PLEX_Title']
 
 Bei Filmen wird folgendes übergeben...
 ```php
-$_IPS['PLEX_Title']				// Filmname
-$_IPS['PLEX_MovieFormat'] // Filmformat (z.B. 1080p)
-$_IPS['PLEX_SoundFormat'] // Soundformat (z.B. DTS HD-MA)
-$_IPS['PLEX_Duration']    // Laufzeit
-$_IPS['PLEX_Cover']				// Cover in Form von /library/metadata/55183/thumb/1605439527
+$_IPS['PLEX_Title']				    // Filmname
+$_IPS['PLEX_MovieFormat']     // Filmformat (z.B. 1080p)
+$_IPS['PLEX_SoundFormat']     // Soundformat (z.B. DTS HD-MA)
+$_IPS['PLEX_Duration']        // Laufzeit
+$_IPS['PLEX_RemainDuration']  // Rest-Laufzeit
+$_IPS['PLEX_Cover']				    // Cover in Form von /library/metadata/55183/thumb/1605439527
 ```
 
 Bei Serien wird folgendes übergeben...
@@ -149,6 +150,7 @@ $_IPS['PLEX_SeasonEpisode'] 		// S02E03
 $_IPS['PLEX_MovieFormat'] 			// Serienformat (z.B. 1080p)
 $_IPS['PLEX_SoundFormat'] 			// Serienformat (z.B. DTS HD-MA)
 $_IPS['PLEX_Duration']    			// Laufzeit
+$_IPS['PLEX_RemainDuration']    // Rest-Laufzeit
 $_IPS['PLEX_CoverSeasonAlbum']	// Cover in Form von /library/metadata/55183/thumb/1605439527
 ```
 
@@ -159,6 +161,7 @@ $_IPS['PLEX_SeasonAlbum']				// Albumname
 $_IPS['PLEX_TitleEpisodeMusic']	// Titel
 $_IPS['PLEX_SoundFormat'] 			// Serienformat (z.B. DTS HD-MA)
 $_IPS['PLEX_Duration']    			// Laufzeit
+$_IPS['PLEX_RemainDuration']    // Rest-Laufzeit
 $_IPS['PLEX_CoverSeasonAlbum']	// Cover in Form von /library/metadata/55183/thumb/1605439527
 ```
 
