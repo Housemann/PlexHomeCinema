@@ -165,7 +165,7 @@ $_IPS['PLEX_RemainDuration']    // Rest-Laufzeit
 $_IPS['PLEX_CoverSeasonAlbum']	// Cover in Form von /library/metadata/55183/thumb/1605439527
 ```
 
-Für das Cover muss die URL zusammengebaut werden von euren PlexServer in Form von...
+Für das Cover muss die URL von eurem PlexServer zusammengebaut werden...
 ```php
 "http://ip:port".$_IPS['PLEX_Cover']
 // Ergebnis: http://ip:port/library/metadata/55183/thumb/1605439527

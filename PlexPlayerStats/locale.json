@@ -40,7 +40,21 @@
             "Custom script": "Eigenes Skript",
             "User": "Benutzer",
             "Refresh Durationtime (Seconds)": "Aktualisierungszeit Restlaufzeit (Sekunden)",
-            "Progress": "Fortschritt"
+            "Progress": "Fortschritt",
+            "Create for HTML-Overview...": "Erstellung HTML-Übersicht",        
+            "Summary display": "Anzeige der Zusammenfassung",
+            "Year display (Only Movie and Series)": "Jahresanzeige (Nur Filme und Serien)",
+            "Rating display": "Anzeige Bewertung",
+            "Content-Rating display": "Anzeige Altersfreigabe",
+            "Duration display": "Anzeige Laufzeit",
+            "Progress display": "Anzeige Fortschritt",
+            "Videoformat display": "Anzeige Videoformat",
+            "Soundformat display": "Anzeige Tonformat",
+            "Movie-Name": "Film-Name",
+            "Series-Name": "Serien-Name",
+            "Artist-Name": "Künstler-Name",
+            "Refresh HTML Overview": "Aktualisierung HTML Übersicht",
+            "Own script for Send notifications...": "Eigenen Script zum Senden von Benachrichtigungen..."
         },
         "de_DE": {
             "Title":"Titel",
@@ -82,7 +96,21 @@
             "Custom script": "Eigenes Skript",
             "User": "Benutzer",
             "Refresh Durationtime (Seconds)": "Aktualisierungszeit Restlaufzeit (Sekunden)",
-            "Progress": "Fortschritt"
+            "Progress": "Fortschritt",
+            "Create for HTML-Overview...": "Erstellung HTML-Übersicht",
+            "Summary display": "Anzeige der Zusammenfassung",
+            "Year display (Only Movie and Series)": "Jahresanzeige (Nur Filme und Serien)",
+            "Rating display": "Anzeige Bewertung",
+            "Content-Rating display": "Anzeige Altersfreigabe",
+            "Duration display": "Anzeige Laufzeit",
+            "Progress display": "Anzeige Fortschritt",
+            "Videoformat display": "Anzeige Videoformat",
+            "Soundformat display": "Anzeige Tonformat",
+            "Movie-Name": "Film-Name",
+            "Series-Name": "Serien-Name",
+            "Artist-Name": "Künstler-Name",
+            "Refresh HTML Overview": "Aktualisierung HTML Übersicht",
+            "Own script for Send notifications...": "Eigenen Script zum Senden von Benachrichtigungen..."
         }
     }
 }

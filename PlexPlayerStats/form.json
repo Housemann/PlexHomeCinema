@@ -20,24 +20,99 @@
             "name": "playerPlatform",
             "caption": "Player Platform"
         },
-        {
-            "type": "NumberSpinner",
-            "name": "refreshDurationTime",
-            "caption": "Refresh Durationtime (Seconds)"
-        },        
         { 
             "type": "Label", 
-            "label": "_______________________________________________________________________________________________________________________________________________________" 
+            "label": "" 
+        },         
+        {
+            "type": "ExpansionPanel",
+            "caption": "Timer",
+            "items": [
+                {
+                    "type": "NumberSpinner",
+                    "name": "refreshDurationTime",
+                    "caption": "Refresh Durationtime (Seconds)"
+                }                
+            ]
+        },       
+        {
+            "type": "ExpansionPanel",
+            "caption": "Create for HTML-Overview...",
+            "items": [
+                {
+                    "type": "CheckBox",
+                    "name": "CreateSummary", 
+                    "caption": "Summary display"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "CreateYear", 
+                    "caption": "Year display (Only Movie and Series)"
+                },                {
+                    "type": "CheckBox",
+                    "name": "CreateSeasonEpisode", 
+                    "caption": "Season/Episode display (Only Series)"
+                },                
+                {
+                    "type": "CheckBox",
+                    "name": "CreateEpisodeName", 
+                    "caption": "EpisodeName display (Only Series)"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "CreateRating", 
+                    "caption": "Rating display"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "CreateContentRating", 
+                    "caption": "Content-Rating display"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "CreateDuration", 
+                    "caption": "Duration display"
+                },                  
+                {
+                    "type": "CheckBox",
+                    "name": "CreateProgressDuration", 
+                    "caption": "Progress display"
+                },
+                {
+                    "type": "CheckBox",
+                    "name": "CreateVideo", 
+                    "caption": "Videoformat display"
+                },                  
+                {
+                    "type": "CheckBox",
+                    "name": "CreateSound", 
+                    "caption": "Soundformat display"
+                }                     
+            ]
         },
         { 
-            "type": "SelectScript", 
-            "name": "OwnScriptID", 
-            "caption": "Script" 
-        },
+            "type": "ExpansionPanel",
+            "caption": "Own script for Send notifications...",
+            "items": [
+                { 
+                    "type": "SelectScript", 
+                    "name": "OwnScriptID", 
+                    "caption": "Script" 
+                },
+                { 
+                    "type": "CheckBox", 
+                    "name": "OwnScriptAktive", 
+                    "caption": "Custom script" 
+                }
+            ]
+        }
+    ],
+    "actions":
+    [
         { 
-            "type": "CheckBox", 
-            "name": "OwnScriptAktive", 
-            "caption": "Custom script" 
+            "type": "Button", 
+            "label": "Refresh HTML Overview", 
+            "onClick": "PLEX_GenerateHtmlOverview($id);" 
         }
     ]
 }
