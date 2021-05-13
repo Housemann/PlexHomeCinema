@@ -48,8 +48,8 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 
 			// Timer anlegen
 			$TimerNameRand = rand(1,99);
-			$this->RegisterAttributeString('TimerNameRand',"TimerPlexRemain".$TimerNameRand);
-			$this->RegisterTimer ("TimerPlexRemain".$TimerNameRand, 0, 'PLEX_GetDuration($_IPS[\'TARGET\'],\'Timer\');');
+			$this->RegisterAttributeString('TimerNameRand',"TimerPlexRemain");
+			$this->RegisterTimer ("TimerPlexRemain", 0, 'PLEX_GetDuration($_IPS[\'TARGET\'],\'Timer\');');
 
 			#############################################################################################
 			// Variablen und Profile anlegen
