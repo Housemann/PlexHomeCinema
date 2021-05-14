@@ -1212,9 +1212,9 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 	        if($librarySectionType == "artist") {
 						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Artist-Name")."</td>";
 					} elseif ($librarySectionType == "show") {
-						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Series-Name")."</td>";
+						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Title")."</td>";
 					} elseif ($librarySectionType == "movie") {
-						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Movie-Name")."</td>";
+						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Title")."</td>";
 					}
 	        $s = $s . "<td style=\"width: 40%; height: 18px; text-align: right;border-bottom: 1px solid white;font-size: 16px;\" colspan=\"2\">".$title."</td>";
 	        $s = $s . "</tr>";
