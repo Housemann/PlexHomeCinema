@@ -50,9 +50,7 @@
             "Progress display": "Anzeige Fortschritt",
             "Videoformat display": "Anzeige Videoformat",
             "Soundformat display": "Anzeige Tonformat",
-            "Movie-Name": "Film-Name",
-            "Series-Name": "Serien-Name",
-            "Artist-Name": "Künstler-Name",
+            "Artistname": "Künstler",
             "Refresh HTML Overview": "Aktualisierung HTML Übersicht",
             "Own script for Send notifications...": "Eigenen Script zum Senden von Benachrichtigungen..."
         },
@@ -106,9 +104,7 @@
             "Progress display": "Anzeige Fortschritt",
             "Videoformat display": "Anzeige Videoformat",
             "Soundformat display": "Anzeige Tonformat",
-            "Movie-Name": "Film-Name",
-            "Series-Name": "Serien-Name",
-            "Artist-Name": "Künstler-Name",
+            "Artistname": "Künstler",
             "Refresh HTML Overview": "Aktualisierung HTML Übersicht",
             "Own script for Send notifications...": "Eigenen Script zum Senden von Benachrichtigungen..."
         }

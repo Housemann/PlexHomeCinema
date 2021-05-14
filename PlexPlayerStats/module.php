@@ -1210,7 +1210,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 	        $s = $s . "</tr>";
 
 	        if($librarySectionType == "artist") {
-						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Artist-Name")."</td>";
+						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Artistname")."</td>";
 					} elseif ($librarySectionType == "show") {
 						$s = $s . "<td style=\"width: 40%; height: 35px; text-align: left;font-weight: bold;border-bottom: 1px solid white;font-size: 20px \" colspan=\"2\">".$this->translate("Title")."</td>";
 					} elseif ($librarySectionType == "movie") {
