@@ -752,7 +752,6 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
 								$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
 								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);								
-								$this->SendDebug(__FUNCTION__, "thetvdb audienceRatingImage: ".$audienceRatingImage_host."_".$audienceRatingImage_pic, 0);
 							}							
 						} else {
 							$this->SetValue('audienceRating','');
@@ -982,18 +981,19 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			// Check Folder Exists an copy clearing Files into
 			if (!file_exists(IPS_GetKernelDir()."webfront/user/PlexCover")) {
 				mkdir(IPS_GetKernelDir()."webfront/user/PlexCover", 0777, true);
+			}
 
-				// Copy Files
-				$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/PlexPlayerStats/img/';
-				$DestPath   = IPS_GetKernelDir().'webfront/user/PlexCover/';
-				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png,FSK_0.png,FSK_6.png,FSK_12.png,FSK_16.png,FSK_18.png,themoviedb_rating.png,thetvdb_rating.png';
+			// Copy Files
+			$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/PlexPlayerStats/img/';
+			$DestPath   = IPS_GetKernelDir().'webfront/user/PlexCover/';
+			$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png,FSK_0.png,FSK_6.png,FSK_12.png,FSK_16.png,FSK_18.png,themoviedb_rating.png,thetvdb_rating.png';
 
-				foreach(explode(",",$files) as $file) {
-				  if (!copy($TargetPath.$file, $DestPath.$file)) {
-				    echo "copy $TargetPath schlug fehl...\n";
-				  }
+			foreach(explode(",",$files) as $file) {
+				if (!copy($TargetPath.$file, $DestPath.$file)) {
+					echo "copy $TargetPath schlug fehl...\n";
 				}
 			}
+			
 		
 			// Content aus Pfad holen
 			if(!empty($MediaPath) && $Event <> "media.stop") {
@@ -1130,8 +1130,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$rating 							= $this->GetValue('rating');
 			$ratingImage 					= $this->GetValue('ratingImage');
 			$audienceRating 			= $this->GetValue('audienceRating');
-			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');
-			$this->SendDebug(__FUNCTION__, "GenerateHtmlOverview audienceRatingImage: ".$audienceRatingImage, 0);
+			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');			
 
 			// Propertys HTML Checkbox auslesen
 			$CreateSummary          		= $this->ReadPropertyBoolean('CreateSummary');
