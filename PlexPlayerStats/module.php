@@ -752,7 +752,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
 								$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
 								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);								
-								$this->SendDebug(__FUNCTION__, "audienceRatingImage: ".$audienceRatingImage_host."_".$audienceRatingImage_pic, 0);
+								$this->SendDebug(__FUNCTION__, "thetvdb audienceRatingImage: ".$audienceRatingImage_host."_".$audienceRatingImage_pic, 0);
 							}							
 						} else {
 							$this->SetValue('audienceRating','');
@@ -1131,7 +1131,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			$ratingImage 					= $this->GetValue('ratingImage');
 			$audienceRating 			= $this->GetValue('audienceRating');
 			$audienceRatingImage 	= $this->GetValue('audienceRatingImage');
-			$this->SendDebug(__FUNCTION__, "audienceRatingImage: ".$audienceRatingImage, 0);
+			$this->SendDebug(__FUNCTION__, "GenerateHtmlOverview audienceRatingImage: ".$audienceRatingImage, 0);
 
 			// Propertys HTML Checkbox auslesen
 			$CreateSummary          		= $this->ReadPropertyBoolean('CreateSummary');
