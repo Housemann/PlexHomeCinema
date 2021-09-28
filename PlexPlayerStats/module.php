@@ -748,7 +748,11 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
 								$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
 								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
-							}
+							} /* elseif($audienceRatingImage_host=="thetvdb") {
+								$audienceRatingImage_pic  = substr($audienceRatingImage,strripos($audienceRatingImage,".")+1,10);
+								$this->SetValue('audienceRating',strval($metadata->audienceRating * 10).' %');
+								$this->SetValue('audienceRatingImage',$audienceRatingImage_host."_".$audienceRatingImage_pic);
+							} */
 						} else {
 							$this->SetValue('audienceRating','');
 							$this->SetValue('audienceRatingImage','');
@@ -981,7 +985,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 				// Copy Files
 				$TargetPath = IPS_GetKernelDir().'modules/PlexHomeCinema/PlexPlayerStats/img/';
 				$DestPath   = IPS_GetKernelDir().'webfront/user/PlexCover/';
-				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png,FSK_0.png,FSK_6.png,FSK_12.png,FSK_16.png,FSK_18.png,themoviedb_rating.png';
+				$files = 'plex_cover.jpg,plex_fanart.jpg,imdb_rating.png,rottentomatoes_ripe.png,rottentomatoes_rotten.png,rottentomatoes_spilled.png,rottentomatoes_upright.png,FSK_0.png,FSK_6.png,FSK_12.png,FSK_16.png,FSK_18.png,themoviedb_rating.png,thetvdb_rating.png';
 
 				foreach(explode(",",$files) as $file) {
 				  if (!copy($TargetPath.$file, $DestPath.$file)) {
@@ -1277,7 +1281,10 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 							} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,10) == "themoviedb") {
 								// Rating == false und Audience Rating == true && THEMOVIEDB
 								$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";							
-							}
+							} /* elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,7) == "thetvdb") {
+								// Rating == false und Audience Rating == true && THETVDB
+								$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";							
+							} */
 
 							$s = $s . "</td>";
 							$s = $s . "</tr>";
