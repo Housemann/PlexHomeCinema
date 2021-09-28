@@ -1283,7 +1283,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 							} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,10) == "themoviedb") {
 								// Rating == false und Audience Rating == true && THEMOVIEDB
 								$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";							
-							} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,7) == "thetvdb") {
+							} elseif(!empty($audienceRatingImage) && substr($audienceRatingImage,0,6) == "thetvdb") {
 								// Rating == false und Audience Rating == true && THETVDB
 								$s = $s . "<table width=100%; align=left ><tr><td></td><td width=50px>".$audienceRating."</td><td width=50px>".$MyaudienceRating."</td></tr></table>";							
 							}
