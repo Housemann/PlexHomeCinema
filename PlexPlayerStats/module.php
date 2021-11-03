@@ -14,7 +14,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			
 			$this->ConnectParent('{CD98E05C-AF3F-91A2-B064-49694D01215F}');
 
-			// Propertys
+			// Propertys 
 			$this->RegisterPropertyString('playerUUID', '');
 			$this->RegisterPropertyString('player', '');
 			$this->RegisterPropertyString('playerPlatform', '');
