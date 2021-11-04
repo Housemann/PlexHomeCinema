@@ -12,7 +12,7 @@ require_once __DIR__ . '/../libs/helper_variables.php';
 			//Never delete this line!
 			parent::Create();
 			
-			$this->ConnectParent('{CD98E05C-AF3F-91A2-B064-49694D01215F}'); 
+			$this->ConnectParent('{CD98E05C-AF3F-91A2-B064-49694D01215F}');  
 
 			// Propertys 
 			$this->RegisterPropertyString('playerUUID', '');
